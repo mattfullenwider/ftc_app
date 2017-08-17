@@ -67,7 +67,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  */
 
 @Autonomous(name = "Vuforia Read Target", group = "Mike")
-//@Disabled
+@Disabled
 public class ExampleVuforiaNavigation extends LinearOpMode {
 
     /**
