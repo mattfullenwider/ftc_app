@@ -40,7 +40,7 @@ import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 
-@TeleOp(name = "Read color sensor", group = "Mike")
+@TeleOp(name = "Read color sensor", group = "Example")
 @Disabled
 
 public class ExampleI2cColorSensorRead extends OpMode {

@@ -44,7 +44,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
  * Demonstrates how to read the FTC Velocity Vortex beacon color
  */
-@Autonomous(name = "Color Sensor for Beacon", group = "Mike")
+@Autonomous(name = "Color Sensor for Beacon", group = "Example")
 @Disabled
 public class ExampleColorSensorReadBeacon extends OpMode {
 

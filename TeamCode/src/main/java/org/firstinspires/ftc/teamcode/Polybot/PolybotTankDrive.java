@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name = "Polybot Tank Drive", group = "Team")
+@TeleOp(name = "Polybot Tank Drive", group = "Polybot")
 //@Disabled
 
 public class PolybotTankDrive extends OpMode {

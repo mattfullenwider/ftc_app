@@ -1,4 +1,4 @@
-/* Copyright (c) 2016 PSM
+/* Copyright (c) 2014, 2015 Qualcomm Technologies Inc
 
 All rights reserved.
 
@@ -31,45 +31,52 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.DigitalChannelController;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.I2cAddr;
 
+/**
+ * Demonstrates how to setup and use 2 MR color sensors
+ */
+@Autonomous(name = "Read MR Color Sensor", group = "Example")
+//@Disabled
+public class Example1ColorSensor extends OpMode {
 
-@TeleOp(name = "Trigger LED", group = "Example")
-@Disabled
-public class DigitalIOTriggerForLED extends OpMode {
-
-    DigitalChannel      blueLED;               // Device Object
-    DigitalChannel      redLED;
+    ColorSensor colorSensor;
 
     @Override
     public void init() {
-        // get a reference to a Modern Robotics DIM, and IO channels.
-        blueLED = hardwareMap.get(DigitalChannel.class, "blue");
-        redLED = hardwareMap.get(DigitalChannel.class, "red");
+        colorSensor = hardwareMap.colorSensor.get("colorsensor");
 
-        blueLED.setMode(DigitalChannelController.Mode.OUTPUT);
-        redLED.setMode(DigitalChannelController.Mode.OUTPUT);
+        colorSensor.setI2cAddress(I2cAddr.create8bit(0x3C));
 
-        // wait for the start button to be pressed.
-        telemetry.addData(">", "Press play, and then red or blue button");
+        colorSensor.enableLed(false);
+
+        telemetry.addData("Status", "Initialized");
+    }
+
+
+    @Override
+    public void init_loop() { }
+
+
+    @Override
+    public void start() { }
+
+
+    @Override
+    public void loop() {
+        if(gamepad1.a) {colorSensor.enableLed(false);} else {colorSensor.enableLed(true);}
+
+        telemetry.addData("0", "Press A on Gamepad1 to turn off LED");
+        telemetry.addData("1", "Red: " + colorSensor.red());
+        telemetry.addData("2", "Green: " + colorSensor.green());
+        telemetry.addData("3", "Blue: " + colorSensor.blue());
+        telemetry.addData("4", "Alpha: " + colorSensor.alpha());
     }
 
     @Override
-    public void loop(){
-
-        blueLED.setState(gamepad1.x);
-        redLED.setState(gamepad1.b);
-
-
-        telemetry.addData("red LED", redLED.getState());
-        telemetry.addData("blue LED", blueLED.getState());
-
-        telemetry.update();
-    }
-
+    public void stop() {}
 }

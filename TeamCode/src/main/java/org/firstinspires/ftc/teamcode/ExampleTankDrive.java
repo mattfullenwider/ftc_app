@@ -37,8 +37,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name = "Example Tank Drive", group = "Team")
-@Disabled
+@TeleOp(name = "Example Tank Drive", group = "Example")
+//@Disabled
 
 public class ExampleTankDrive extends OpMode {
 

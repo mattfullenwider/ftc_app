@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Designed for Red side of Field
  */
 
-@Autonomous(name = "Red Follow Wall", group = "Mentorbot")
+@Autonomous(name = "Red Auto Ramp", group = "Mentorbot")
 @Disabled
 
 public class MentorbotRedAutoRamp extends OpMode {

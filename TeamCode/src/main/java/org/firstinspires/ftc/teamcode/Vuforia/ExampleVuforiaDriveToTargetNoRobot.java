@@ -47,7 +47,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-@Autonomous(name = "Vuforia Drive to Target No Bot", group = "Mike")
+@Autonomous(name = "Vuforia Drive to Target No Bot", group = "Vuforia")
 @Disabled
 
 public class ExampleVuforiaDriveToTargetNoRobot extends OpMode {

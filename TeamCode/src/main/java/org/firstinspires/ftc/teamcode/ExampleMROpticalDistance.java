@@ -1,4 +1,4 @@
-/* Copyright (c) 2016 PSM
+/* Copyright (c) 2015 Qualcomm Technologies Inc
 
 All rights reserved.
 
@@ -31,45 +31,44 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.DigitalChannelController;
+import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
+
+/*
+ * This is an example OpMode that shows how to use
+ * a Modern Robotics Optical Distance Sensor
+ * It assumes that the ODS sensor is configured with a name of "odssensor".
+ *
+ */
+@Autonomous(name = "Example MR ODS", group = "Example")
+//@Disabled
+public class ExampleMROpticalDistance extends OpMode {
+
+  OpticalDistanceSensor odsSensor;  // Hardware Device Object
+
+  @Override
+  public void init() {
+
+    // get a reference to our Light Sensor object.
+    odsSensor = hardwareMap.opticalDistanceSensor.get("odssensor");
+  }
+
+  @Override
+  public void init_loop() {}
 
 
-@TeleOp(name = "Trigger LED", group = "Example")
-@Disabled
-public class DigitalIOTriggerForLED extends OpMode {
+  @Override
+  public void loop() {
 
-    DigitalChannel      blueLED;               // Device Object
-    DigitalChannel      redLED;
+      // send the info back to driver station using telemetry function.
+      telemetry.addData("Raw",    odsSensor.getRawLightDetected());
+      telemetry.addData("Normal", odsSensor.getLightDetected());
 
-    @Override
-    public void init() {
-        // get a reference to a Modern Robotics DIM, and IO channels.
-        blueLED = hardwareMap.get(DigitalChannel.class, "blue");
-        redLED = hardwareMap.get(DigitalChannel.class, "red");
+  }
 
-        blueLED.setMode(DigitalChannelController.Mode.OUTPUT);
-        redLED.setMode(DigitalChannelController.Mode.OUTPUT);
-
-        // wait for the start button to be pressed.
-        telemetry.addData(">", "Press play, and then red or blue button");
-    }
-
-    @Override
-    public void loop(){
-
-        blueLED.setState(gamepad1.x);
-        redLED.setState(gamepad1.b);
-
-
-        telemetry.addData("red LED", redLED.getState());
-        telemetry.addData("blue LED", blueLED.getState());
-
-        telemetry.update();
-    }
+  @Override
+  public void stop() {}
 
 }

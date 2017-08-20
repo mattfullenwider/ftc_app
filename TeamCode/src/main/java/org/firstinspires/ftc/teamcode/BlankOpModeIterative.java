@@ -39,7 +39,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
  * Demonstrates empty OpMode
  */
-@Autonomous(name = "Blank OpMode", group = "Mike")
+@Autonomous(name = "Blank OpMode", group = "Example")
 @Disabled
 public class BlankOpModeIterative extends OpMode {
 

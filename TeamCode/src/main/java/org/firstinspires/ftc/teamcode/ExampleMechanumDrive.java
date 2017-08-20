@@ -40,7 +40,7 @@ import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 
-@TeleOp(name = "Mechanum Drive", group = "Mike")
+@TeleOp(name = "Mechanum Drive", group = "Example")
 //@Disabled
 
 public class ExampleMechanumDrive extends OpMode {

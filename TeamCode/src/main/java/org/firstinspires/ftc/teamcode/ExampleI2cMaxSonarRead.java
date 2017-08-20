@@ -40,7 +40,7 @@ import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name = "Read Max Sonar sensor", group = "Mike")
+@TeleOp(name = "Read Max Sonar sensor", group = "Example")
 @Disabled
 
 public class ExampleI2cMaxSonarRead extends OpMode {

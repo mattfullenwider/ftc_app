@@ -1,4 +1,4 @@
-/* Copyright (c) 2016 PSM
+/* Copyright (c) 2014, 2015 Qualcomm Technologies Inc
 
 All rights reserved.
 
@@ -31,45 +31,64 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.DigitalChannelController;
+import com.qualcomm.robotcore.hardware.I2cAddr;
 
+/**
+ * Demonstrates how to setup and use 2 MR color sensors
+ */
+@Autonomous(name = "Read MR Gyro Sensor", group = "Example")
+//@Disabled
+public class ExampleMRGyroSensor extends OpMode {
 
-@TeleOp(name = "Trigger LED", group = "Example")
-@Disabled
-public class DigitalIOTriggerForLED extends OpMode {
-
-    DigitalChannel      blueLED;               // Device Object
-    DigitalChannel      redLED;
+    ModernRoboticsI2cGyro gyroSensor;
+    boolean lastResetState = false;
+    boolean curResetState  = false;
 
     @Override
     public void init() {
-        // get a reference to a Modern Robotics DIM, and IO channels.
-        blueLED = hardwareMap.get(DigitalChannel.class, "blue");
-        redLED = hardwareMap.get(DigitalChannel.class, "red");
+        gyroSensor = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyrosensor");
 
-        blueLED.setMode(DigitalChannelController.Mode.OUTPUT);
-        redLED.setMode(DigitalChannelController.Mode.OUTPUT);
+        gyroSensor.setI2cAddress(I2cAddr.create8bit(0x20));
+    }
 
-        // wait for the start button to be pressed.
-        telemetry.addData(">", "Press play, and then red or blue button");
+
+    @Override
+    public void init_loop() {
+        if(gyroSensor.getIntegratedZValue() != 0) {
+            gyroSensor.calibrate();
+        }
+
+        if(gyroSensor.isCalibrating()) {
+            telemetry.addData("Status", "Calibrating Do Not Move!");
+        } else {
+            telemetry.addData("Status", "Initialized");
+        }
+    }
+
+
+    @Override
+    public void start() { }
+
+
+    @Override
+    public void loop() {
+        // If the A and B buttons are pressed just now, reset Z heading.
+        curResetState = (gamepad1.a && gamepad1.b);
+        if (curResetState && !lastResetState) {
+            gyroSensor.resetZAxisIntegrator();
+        }
+        lastResetState = curResetState;
+
+
+        telemetry.addData("0", "Press A & B on Gamepad1 to reset Z Axis");
+        telemetry.addData("1", "Heading: " + gyroSensor.getHeading());
+        telemetry.addData("2", "Integrated Z Value: " + gyroSensor.getIntegratedZValue());
     }
 
     @Override
-    public void loop(){
-
-        blueLED.setState(gamepad1.x);
-        redLED.setState(gamepad1.b);
-
-
-        telemetry.addData("red LED", redLED.getState());
-        telemetry.addData("blue LED", blueLED.getState());
-
-        telemetry.update();
-    }
-
+    public void stop() {}
 }
