@@ -68,6 +68,8 @@ public class RevGyroRead extends OpMode {
     // State used for updating telemetry
     Orientation angles;
     Acceleration gravity;
+    double heading = 0;
+    int rotations = 0;
 
 
     @Override
@@ -93,6 +95,13 @@ public class RevGyroRead extends OpMode {
     }
 
 
+    @Override
+    public void init_loop() {
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        telemetry.addData("1", "Integrated Heading: " + getIntegratedHeading());
+        telemetry.addData("2", "heading: " + angles.firstAngle);
+    }
 
     @Override
     public void loop() {
@@ -100,14 +109,14 @@ public class RevGyroRead extends OpMode {
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         gravity = imu.getGravity();
 
+
+
 // Some lines of ordered telemetry data sent to the DS screen
+        telemetry.addData("0", "Integrated Heading: " + getIntegratedHeading());
         telemetry.addData("1", "heading: " + formatAngle(angles.angleUnit, angles.firstAngle));
         telemetry.addData("2", "pitch: " + formatAngle(angles.angleUnit, angles.secondAngle));
         telemetry.addData("3", "roll: " + formatAngle(angles.angleUnit, angles.thirdAngle));
         telemetry.addData("4", "gravity: " + gravity.toString());
-
-
-
 
     }
 
@@ -126,5 +135,17 @@ public class RevGyroRead extends OpMode {
 
     String formatDegrees(double degrees){
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
+    }
+
+    public double getIntegratedHeading() {
+        if(heading - (rotations * 360 + angles.firstAngle) > 200) {
+            rotations++;
+        }
+        else if(heading - (rotations * 360 + angles.firstAngle) < -200) {
+            rotations--;
+        }
+
+        heading = rotations * 360 + angles.firstAngle;
+        return heading;
     }
 }

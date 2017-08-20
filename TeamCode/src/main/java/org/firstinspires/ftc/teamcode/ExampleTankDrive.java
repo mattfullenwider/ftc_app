@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "Example Tank Drive", group = "Team")
-//@Disabled
+@Disabled
 
 public class ExampleTankDrive extends OpMode {
 
