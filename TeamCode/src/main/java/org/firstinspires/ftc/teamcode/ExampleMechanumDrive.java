@@ -41,7 +41,7 @@ import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 
 @TeleOp(name = "Mechanum Drive", group = "Example")
-//@Disabled
+@Disabled
 
 public class ExampleMechanumDrive extends OpMode {
     int intZValue = 0;                  //Variable for the integrated Z value (The direction to robot is actually facing

@@ -41,7 +41,7 @@ import com.qualcomm.robotcore.hardware.I2cAddr;
  * Demonstrates how to setup and use 2 MR color sensors
  */
 @Autonomous(name = "Read MR Gyro Sensor", group = "Example")
-//@Disabled
+@Disabled
 public class ExampleMRGyroSensor extends OpMode {
 
     ModernRoboticsI2cGyro gyroSensor;

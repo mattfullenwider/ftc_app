@@ -35,18 +35,24 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name = "Polybot Tank Drive", group = "Polybot")
+@TeleOp(name = "Polybot Tank Drive and Arm", group = "Polybot")
 //@Disabled
 
-public class PolybotTankDrive extends OpMode {
+public class PolybotTankDriveWithArm extends OpMode {
 
     DcMotor frontRightMotor;
     DcMotor frontLeftMotor;
     DcMotor backRightMotor;
     DcMotor backLeftMotor;
-    DcMotor shooterMotor;
+    DcMotor armMotor;
+    Servo gripper;
+
+    double gripperOpen = .5;
+    double gripperClose = .8;
+
 
     @Override
     public void init() {
@@ -54,7 +60,8 @@ public class PolybotTankDrive extends OpMode {
         frontLeftMotor = hardwareMap.dcMotor.get("frontleft");
         backRightMotor = hardwareMap.dcMotor.get("backright");
         backLeftMotor = hardwareMap.dcMotor.get("backleft");
-        shooterMotor = hardwareMap.dcMotor.get("shooter");
+        armMotor = hardwareMap.dcMotor.get("arm");
+        gripper = hardwareMap.servo.get("gripper");
 
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -63,8 +70,6 @@ public class PolybotTankDrive extends OpMode {
         frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        //rightMotor.setDirection(DcMotor.Direction.REVERSE);
 
         telemetry.addData("Status:", "Robot is Initialized");
     }
@@ -84,17 +89,17 @@ public class PolybotTankDrive extends OpMode {
     public void loop() {
 
         //Set drive motor speeds
-        if(gamepad1.right_trigger > .1) {
-            frontRightMotor.setPower(Range.clip(gamepad1.right_trigger,-1,1));
-            backRightMotor.setPower(Range.clip(-gamepad1.right_trigger,-1,1));
-            frontLeftMotor.setPower(Range.clip(-gamepad1.right_trigger,-1,1));
-            backLeftMotor.setPower(Range.clip(gamepad1.right_trigger,-1,1));
+        if(gamepad1.dpad_right) {
+            frontRightMotor.setPower(.8);
+            backRightMotor.setPower(-.8);
+            frontLeftMotor.setPower(-.8);
+            backLeftMotor.setPower(.8);
         }
-        else if(gamepad1.left_trigger > .1) {
-            frontRightMotor.setPower(Range.clip(-gamepad1.left_trigger,-1,1));
-            backRightMotor.setPower(Range.clip(gamepad1.left_trigger,-1,1));
-            frontLeftMotor.setPower(Range.clip(gamepad1.left_trigger,-1,1));
-            backLeftMotor.setPower(Range.clip(-gamepad1.left_trigger,-1,1));
+        else if(gamepad1.dpad_left) {
+            frontRightMotor.setPower(-.8);
+            backRightMotor.setPower(.8);
+            frontLeftMotor.setPower(.8);
+            backLeftMotor.setPower(-.8);
         }
         else {
             frontRightMotor.setPower(Range.clip(gamepad1.right_stick_y, -1, 1));
@@ -104,8 +109,21 @@ public class PolybotTankDrive extends OpMode {
         }
 
 
-        //Run shooter motor to shoot the ball
-        if(gamepad1.a) {shooterMotor.setPower(1);} else {shooterMotor.setPower(0);}
+        //Set arm motor speed
+        if(gamepad1.right_bumper) {
+            armMotor.setPower(.5);
+        } else if(gamepad1.right_trigger > .2){
+            armMotor.setPower(-.2);
+        } else {
+            armMotor.setPower(0);
+        }
+
+        //Set gripper position
+        if (gamepad1.left_bumper) {
+            gripper.setPosition(gripperOpen);
+        } else if(gamepad1.left_trigger > .2) {
+            gripper.setPosition(gripperClose);
+        }
 
 
         // send the info back to driver station using telemetry function.
@@ -124,6 +142,6 @@ public class PolybotTankDrive extends OpMode {
         frontLeftMotor.setPower(0);
         backRightMotor.setPower(0);
         backLeftMotor.setPower(0);
-        shooterMotor.setPower(0);
+        armMotor.setPower(0);
     }
 }

@@ -41,7 +41,7 @@ import com.qualcomm.robotcore.hardware.I2cAddr;
  * Demonstrates how to setup and use 2 MR color sensors
  */
 @Autonomous(name = "Read MR Color Sensor", group = "Example")
-//@Disabled
+@Disabled
 public class Example1ColorSensor extends OpMode {
 
     ColorSensor colorSensor;

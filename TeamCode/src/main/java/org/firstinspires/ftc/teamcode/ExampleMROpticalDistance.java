@@ -43,7 +43,7 @@ import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
  *
  */
 @Autonomous(name = "Example MR ODS", group = "Example")
-//@Disabled
+@Disabled
 public class ExampleMROpticalDistance extends OpMode {
 
   OpticalDistanceSensor odsSensor;  // Hardware Device Object
