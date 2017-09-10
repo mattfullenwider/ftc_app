@@ -136,8 +136,8 @@ public class ExampleVuforiaTrackImage extends OpMode {
     private void vuforiaInit() {
         parameters = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId); // To remove the camera view from the screen, remove the R.id.cameraMonitorViewId
         parameters.vuforiaLicenseKey = "AcZlc3n/////AAAAGWPeDCNLuk38gPuwF9cpyK2BYbGciGSeJy9AkSXPprQUEtg/VxgqB6j9WJuQvGo4pq+h4gwPSd134WD707FXnbuJjqdqkh5/92mATPs96WQ2RVoaU8QLbsJonufIl2T6qqqT83aOJHbz34mGJszad+Mw7VAWM11av5ltOoq8/rSKbmSFxAVi3d7oiT3saE0XBx4svhpGLwauy6Y0L7X0fC7FwHKCnw/RPL4V+Q8v2rtCTOwvjfnjxmRMind01HSWcxd9ppBwzvHVCPhePccnyWVv5jNiYXia9r4FlrJpAPgZ1GsCfdbt6AoT6Oh2Hnx267J+MHUnLi/C+0brvnQfcDregLBfnZApfd2c1WDiXJp/";
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        parameters.useExtendedTracking = true;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+        parameters.useExtendedTracking = false;
         vuforiaLocalizer = ClassFactory.createVuforiaLocalizer(parameters);
 
         // These are the vision targets that we want to use
@@ -159,7 +159,7 @@ public class ExampleVuforiaTrackImage extends OpMode {
 
 
         // Set phone location on robot
-        phoneLocation = createMatrix(0, 0, 0, 0, 0, 90);
+        phoneLocation = createMatrix(0, 0, 0, 0, 180, -90);
 
         /**
          * Let the trackable listeners we care about know where the phone is. We know that each
