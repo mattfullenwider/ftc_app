@@ -52,14 +52,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 public class RelicVuMarkIdentification2 extends OpMode {
 
     public static final String TAG = "Vuforia VuMark Sample";
-    private OpenGLMatrix pose = null;
+    public OpenGLMatrix pose = null;
 
-    private VuforiaLocalizer vuforia;
-    private VuforiaLocalizer.Parameters parameters;
-    private VuforiaTrackables relicTrackables;
-    private VuforiaTrackable relicTemplate;
-    private RelicRecoveryVuMark vuMark;
-    private VuforiaTrackableDefaultListener relicTemplateListener;
+    public VuforiaLocalizer vuforia;
+    public VuforiaLocalizer.Parameters parameters;
+    public VuforiaTrackables relicTrackables;
+    public VuforiaTrackable relicTemplate;
+    public RelicRecoveryVuMark vuMark;
+    public VuforiaTrackableDefaultListener relicTemplateListener;
 
     @Override
     public void init() {
