@@ -79,11 +79,19 @@ public class BotmanAutonomousTest extends OpMode {
         relicVuMark.vuMark = RelicRecoveryVuMark.from(relicVuMark.relicTemplate);
         if (relicVuMark.vuMark != RelicRecoveryVuMark.UNKNOWN) {
 
-            telemetry.addData("VuMark", "%s visible", relicVuMark.vuMark);
             relicVuMark.pose = relicVuMark.relicTemplateListener.getPose();
-            telemetry.addData("Pose", format(relicVuMark.pose));
-        } else {
-            telemetry.addData("VuMark", "not visible");
+            if (format(relicVuMark.pose) == "L"){
+                robot.leftFrontDrive.setPower(1);
+            }
+            if (format(relicVuMark.pose) == "C"){
+                robot.leftBackDrive.setPower(1);
+            }
+            if (format(relicVuMark.pose) == "R"){
+                robot.rightFrontDrive.setPower(1);
+            }
+        }
+        else {
+            robot.rightBackDrive.setPower(1);
         }
     }
 

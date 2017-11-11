@@ -92,7 +92,7 @@ public class BotmanTeleOp extends OpMode{
         robot.rightFrontDrive.setPower(right);
         robot.rightBackDrive.setPower(right);
 
-        if (gamepad1.left_bumper) {
+        if (gamepad1.right_bumper) {
 
             robot.leftFrontDrive.setPower(-1);
             robot.leftBackDrive.setPower(1);
@@ -101,7 +101,7 @@ public class BotmanTeleOp extends OpMode{
 
         }
 
-        if (gamepad1.right_bumper) {
+        if (gamepad1.left_bumper) {
 
             robot.leftFrontDrive.setPower(1);
             robot.leftBackDrive.setPower(-1);
