@@ -67,13 +67,15 @@ public class BotmanTeleOp extends OpMode{
     @Override
     public void loop() {
 
-        double angle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) + (Math.PI / 2);  //calculates angle in radians based on joystick position
+        //calculates angle in radians based on joystick position
+        double angle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) + (Math.PI / 2);
         if (Double.isNaN(angle)){
             angle = 0;              //Prevents NaN error later in the Program
         }
 
         double magnitude = Range.clip(Math.sqrt(Math.pow(gamepad1.left_stick_x, 2) + Math.pow(gamepad1.left_stick_y, 2)), 0, 1);
         //calculates robot speed from
+
 
         double left = -gamepad1.left_stick_y;
         double right = -gamepad1.right_stick_y;
