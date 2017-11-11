@@ -41,18 +41,19 @@ import org.firstinspires.ftc.team7234.RelicVuMarkIdentification2;
 import org.firstinspires.ftc.team7234.HardwareBotman;
 
 import static com.sun.tools.javac.util.Constants.format;
+import java.util.Random;
 
 /**
  * Demonstrates empty OpMode
  */
 @Autonomous(name = "Botman Auto Test", group = "Example")
 //@Disabled
-public class BotmanAutonomousTest extends OpMode {
+public class BotmanAutoSkeleton extends OpMode {
 
     RelicVuMarkIdentification2 relicVuMark = new RelicVuMarkIdentification2();
     HardwareBotman robot = new HardwareBotman();
 
-
+    Random LRC = new Random();
 
     @Override
     public void init() {
@@ -80,18 +81,32 @@ public class BotmanAutonomousTest extends OpMode {
         if (relicVuMark.vuMark != RelicRecoveryVuMark.UNKNOWN) {
 
             relicVuMark.pose = relicVuMark.relicTemplateListener.getPose();
-            if (format(relicVuMark.pose) == "L"){
-                robot.leftFrontDrive.setPower(1);
+            if (format(relicVuMark.pose).equals("L")){
+                //Do thing for left glyph position
             }
-            if (format(relicVuMark.pose) == "C"){
-                robot.leftBackDrive.setPower(1);
+            if (format(relicVuMark.pose).equals("C")){
+                //Do thing for center glyph position
             }
-            if (format(relicVuMark.pose) == "R"){
-                robot.rightFrontDrive.setPower(1);
+            if (format(relicVuMark.pose).equals("R")){
+                //Do thing for right glyph position
             }
         }
+        //The else statement chooses a random integer and uses a position based on it
+        //This is only to look like we know what we are doing
+        //If you want, we can just go for the middle if we cannot detect the image, but I like this better.
         else {
-            robot.rightBackDrive.setPower(1);
+            int randInt = LRC.nextInt(2);
+            telemetry.addData("Random Integer is %s", randInt);
+            if (randInt == 0){
+                //Do thing for left glyph position
+            }
+            if (randInt == 1){
+                //Do thing for center glyph position
+            }
+            if (randInt == 2){
+                //Do thing for right glyph position
+            }
+
         }
     }
 
