@@ -29,20 +29,19 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.team535;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name = "Example Tank Drive", group = "Example")
+@TeleOp(name = "TOBOR Tank Drive", group = "Teleop")
 @Disabled
 
-public class ExampleTankDrive extends OpMode {
+public class TOBORTank extends OpMode {
 
     DcMotor FRMotor;
     DcMotor FLMotor;
@@ -59,8 +58,8 @@ public class ExampleTankDrive extends OpMode {
         FLMotor = hardwareMap.dcMotor.get("FLeft");
         BRMotor = hardwareMap.dcMotor.get("BRight");
         BLMotor = hardwareMap.dcMotor.get("BLeft");
-        rightTrack = hardwareMap.dcMotor.get("rTrack");
-        leftTrack = hardwareMap.dcMotor.get("lTrack");
+        //rightTrack = hardwareMap.dcMotor.get("rTrack");
+        //leftTrack = hardwareMap.dcMotor.get("lTrack");
 
 
         FRMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -75,14 +74,50 @@ public class ExampleTankDrive extends OpMode {
 
     @Override
     public void loop() {
-
-        FRMotor.setPower(Range.clip(gamepad1.right_stick_y,-1,1));
-        BRMotor.setPower(Range.clip(gamepad1.right_stick_y,-1,1));
-        FLMotor.setPower(Range.clip(gamepad1.left_stick_y,-1,1));
-        BLMotor.setPower(Range.clip(gamepad1.left_stick_y,-1,1));
-
+        if (gamepad1.right_trigger>=0.1)
+        {
+            BLMotor.setPower(-1*gamepad1.left_trigger);
+            BRMotor.setPower(-1*gamepad1.left_trigger);
+            FRMotor.setPower(1*gamepad1.left_trigger);
+            FLMotor.setPower(1*gamepad1.left_trigger);
+        }
+        else if (gamepad1.left_trigger>=0.1)
+        {
+            BLMotor.setPower(1*gamepad1.left_trigger);
+            BRMotor.setPower(1*gamepad1.left_trigger);
+            FRMotor.setPower(-1*gamepad1.left_trigger);
+            FLMotor.setPower(-1*gamepad1.left_trigger);
+        }
+        else
+        {
+            FRMotor.setPower(Range.clip(gamepad1.right_stick_y, -1, 1));
+            BRMotor.setPower(Range.clip(gamepad1.right_stick_y, -1, 1));
+            FLMotor.setPower(Range.clip(gamepad1.left_stick_y, -1, 1));
+            BLMotor.setPower(Range.clip(gamepad1.left_stick_y, -1, 1));
+        }
 
         // send the info back to driver station using telemetry function.
+        if (gamepad1.left_bumper)
+        {
+            rightTrack.setPower(-1);
+            leftTrack.setPower(-1);
+        }
+        if (gamepad1.right_bumper)
+        {
+            rightTrack.setPower(1);
+            leftTrack.setPower(1);
+        }
+
+        if (gamepad1.a)
+        {
+            RPlate.setPosition(RPlate.getPosition()+0.002);
+            LPlate.setPosition(LPlate.getPosition()-0.002);
+        }
+        if (gamepad1.b)
+        {
+            RPlate.setPosition(RPlate.getPosition()-0.002);
+            LPlate.setPosition(LPlate.getPosition()+0.002);
+        }
     }
 
 
@@ -92,5 +127,7 @@ public class ExampleTankDrive extends OpMode {
         BRMotor.setPower(0);
         FLMotor.setPower(0);
         BLMotor.setPower(0);
+        rightTrack.setPower(0);
+        leftTrack.setPower(0);
     }
 }
