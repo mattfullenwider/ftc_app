@@ -36,21 +36,6 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.team7234.HardwareBotman;
 
-/**
- * This file provides basic Telop driving for a Pushbot robot.
- * The code is structured as an Iterative OpMode
- *
- * This OpMode uses the common Pushbot hardware class to define the devices on the robot.
- * All device access is managed through the HardwarePushbot class.
- *
- * This particular OpMode executes a basic Tank Drive Teleop for a PushBot
- * It raises and lowers the claw using the Gampad Y and A buttons respectively.
- * It also opens and closes the claws slowly using the left and right Bumper buttons.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
-
 @TeleOp(name="BotmanTeleOp", group="Pushbot")
 //@Disabled
 public class BotmanTeleOp extends OpMode{
@@ -81,6 +66,16 @@ public class BotmanTeleOp extends OpMode{
      */
     @Override
     public void loop() {
+
+        //calculates angle in radians based on joystick position
+        double angle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) + (Math.PI / 2);
+        if (Double.isNaN(angle)){
+            angle = 0;              //Prevents NaN error later in the Program
+        }
+
+        double magnitude = Range.clip(Math.sqrt(Math.pow(gamepad1.left_stick_x, 2) + Math.pow(gamepad1.left_stick_y, 2)), 0, 1);
+        //calculates robot speed from
+
 
         double left = -gamepad1.left_stick_y;
         double right = -gamepad1.right_stick_y;
