@@ -74,6 +74,13 @@ public class HardwareBotman
     public static final double RIGHT_GRIPPER_CLOSED    =  0 ;
     public static final double LEFT_GRIPPER_CLOSED  = 1 ;
 
+    //Establishes variables for motors
+    double[] RawMotorSpeeds = {0.0, 0.0, 0.0, 0.0};
+    double[] FinalMotorSpeeds = {0.0, 0.0, 0.0, 0.0};
+    double SpeedDivider = 0;
+    double[] SpeedsList = {0.0, 0.0, 0.0, 0.0};
+    DcMotor[] driveMotors;
+
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
@@ -119,6 +126,8 @@ public class HardwareBotman
         rightClaw = hwMap.get(Servo.class, "rightClaw");
         leftClaw.setPosition(MID_SERVO);
         rightClaw.setPosition(MID_SERVO);
+
+        driveMotors  = new DcMotor[] {leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive};
     }
 
     public void gripperOpen() {
@@ -128,6 +137,49 @@ public class HardwareBotman
     public void gripperClose() {
         leftClaw.setPosition(LEFT_GRIPPER_CLOSED);
         rightClaw.setPosition(RIGHT_GRIPPER_CLOSED);
+    }
+
+    //Code to run the wheels omnidirectionally
+    void MecanumDrive(double angle, double magnitude, double rotation){  //Calculates and sends values to wheels
+
+        RawMotorSpeeds[0] = ((magnitude*(Math.sin(angle+(Math.PI/4))))+rotation);
+        RawMotorSpeeds[1] = -((magnitude*(Math.cos(angle+(Math.PI/4))))-rotation);  //Generates Raw Values for Motors
+        RawMotorSpeeds[2] = ((magnitude*(Math.cos(angle+(Math.PI/4))))+rotation);
+        RawMotorSpeeds[3] = -((magnitude*(Math.sin(angle+(Math.PI/4))))-rotation);
+
+        SpeedDivider = Math.abs(RawMotorSpeeds[0]);
+        for (int i=0; i<4; i++){
+            if (Math.abs(RawMotorSpeeds[i]) > SpeedDivider){
+                SpeedDivider = Math.abs(RawMotorSpeeds[i]);
+            }
+        }
+
+        if (SpeedDivider > 1) {            //SpeedDivider is only called if it is necessary to maintain ranges
+            for (int i=0; i<4; i++) {
+                FinalMotorSpeeds[i] = RawMotorSpeeds[i] / SpeedDivider;
+            }
+        }
+        else {
+            System.arraycopy(RawMotorSpeeds, 0, FinalMotorSpeeds, 0, 4);
+        }
+
+        for (int i =0; i<4; i++){
+            SpeedsList[i] = this.clip(FinalMotorSpeeds[i], -1.0, 1.0);  //Makes sure values are in range [-1, 1], just in case
+            driveMotors[i].setPower(SpeedsList[i]);
+        }
+
+    }
+
+    //Function to limit values to a range
+    private double clip(double input, double min, double max){   //Method for clipping a value within a range
+        double output = input;
+        if (input < min){
+            output = min;
+        }
+        else if (input > max){
+            output = max;
+        }
+        return output;
     }
  }
 
