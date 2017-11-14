@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
+import com.sun.tools.javac.comp.Todo;
 
 import org.firstinspires.ftc.team7234.HardwareBotman;
 
@@ -43,10 +44,15 @@ public class BotmanTeleOp extends OpMode{
     /* Declare OpMode members. */
     HardwareBotman robot       = new HardwareBotman();
 
+    private boolean isMecanum;
+    private boolean bumperToggle;
+
     @Override
     public void init() {
 
         robot.init(hardwareMap);
+        isMecanum = true;
+        bumperToggle = true;
     }
 
 
@@ -66,49 +72,69 @@ public class BotmanTeleOp extends OpMode{
      */
     @Override
     public void loop() {
-
+        //TODO: decide on an optimal control scheme and controller count
         //calculates angle in radians based on joystick position
         double angle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) + (Math.PI / 2);
         if (Double.isNaN(angle)){
             angle = 0;              //Prevents NaN error later in the Program
         }
 
+        //calculates robot speed from the joystick's distance from the center
         double magnitude = Range.clip(Math.sqrt(Math.pow(gamepad1.left_stick_x, 2) + Math.pow(gamepad1.left_stick_y, 2)), 0, 1);
-        //calculates robot speed from
 
+        // How much the robot should turn while moving in that direction
+        double rotation = Range.clip(gamepad1.right_stick_x, -1, 1);
 
+        //Variables for tank drive
         double left = -gamepad1.left_stick_y;
         double right = -gamepad1.right_stick_y;
-        double armStick = -gamepad2.left_stick_y;
+        //double armStick = -gamepad2.left_stick_y;
+        double armStick = gamepad1.left_trigger - gamepad1.right_trigger;
 
         robot.arm.setPower(armStick);
-        robot.leftFrontDrive.setPower(left);
-        robot.leftBackDrive.setPower(left);
-        robot.rightFrontDrive.setPower(right);
-        robot.rightBackDrive.setPower(right);
 
-        if (gamepad1.right_bumper) {
-
-            robot.leftFrontDrive.setPower(-1);
-            robot.leftBackDrive.setPower(1);
-            robot.rightBackDrive.setPower(-1);
-            robot.rightFrontDrive.setPower(1);
-
+        if (bumperToggle){ //Toggles drive mode based on the x button
+            if (gamepad1.x){
+                isMecanum = !isMecanum;
+                bumperToggle = false;
+            }
+        }
+        else if (!gamepad1.x) {
+            bumperToggle = true;
         }
 
-        if (gamepad1.left_bumper) {
+        if (isMecanum){
+            robot.MecanumDrive(angle, magnitude, rotation);
+        }
+        else{
+            robot.leftFrontDrive.setPower(left);
+            robot.leftBackDrive.setPower(left);
+            robot.rightFrontDrive.setPower(right);
+            robot.rightBackDrive.setPower(right);
 
-            robot.leftFrontDrive.setPower(1);
-            robot.leftBackDrive.setPower(-1);
-            robot.rightBackDrive.setPower(1);
-            robot.rightFrontDrive.setPower(-1);
+            if (gamepad1.right_bumper) {
 
+                robot.leftFrontDrive.setPower(-1);
+                robot.leftBackDrive.setPower(1);
+                robot.rightBackDrive.setPower(-1);
+                robot.rightFrontDrive.setPower(1);
+
+            }
+
+            if (gamepad1.left_bumper) {
+
+                robot.leftFrontDrive.setPower(1);
+                robot.leftBackDrive.setPower(-1);
+                robot.rightBackDrive.setPower(1);
+                robot.rightFrontDrive.setPower(-1);
+
+            }
         }
 
-        if (gamepad2.a){
+        if (gamepad1.a){
             robot.gripperOpen();
         }
-        if (gamepad2.b){
+        else if (gamepad1.b){
             robot.gripperClose();
         }
 
