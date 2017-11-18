@@ -72,7 +72,9 @@ public class HardwareBotman
     public static final double RIGHT_GRIPPER_OPEN    =  1 ;
     public static final double LEFT_GRIPPER_OPEN  = 0 ;
     public static final double RIGHT_GRIPPER_CLOSED    =  0 ;
-    public static final double LEFT_GRIPPER_CLOSED  = 1 ;
+    public static final double LEFT_GRIPPER_CLOSED  = 1;
+    public static final double JEWEL_PUSHER_UP = 0.0; //TODO: Find Jewel Pusher Values
+    public static final double JEWEL_PUSHER_DOWN = 1.0;
 
     //Establishes variables for motors
     double[] RawMotorSpeeds = {0.0, 0.0, 0.0, 0.0};
@@ -124,8 +126,10 @@ public class HardwareBotman
         // Define and initialize ALL installed servos.
         leftClaw  = hwMap.get(Servo.class, "leftClaw");
         rightClaw = hwMap.get(Servo.class, "rightClaw");
+        jewelPusher = hwMap.get(Servo.class, "jewelPusher");
         leftClaw.setPosition(MID_SERVO);
         rightClaw.setPosition(MID_SERVO);
+        jewelPusher.setPosition(JEWEL_PUSHER_UP);
 
         driveMotors  = new DcMotor[] {leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive};
     }
