@@ -80,7 +80,7 @@ public class BotmanTeleOp extends OpMode{
         }
 
         //calculates robot speed from the joystick's distance from the center
-        double magnitude = Range.clip(Math.sqrt(Math.pow(gamepad1.left_stick_x, 2) + Math.pow(gamepad1.left_stick_y, 2)), 0, 1);
+        double magnitude = Math.pow(Range.clip(Math.sqrt(Math.pow(gamepad1.left_stick_x, 2) + Math.pow(gamepad1.left_stick_y, 2)), 0, 1), 3);
 
         // How much the robot should turn while moving in that direction
         double rotation = Range.clip(gamepad1.right_stick_x, -1, 1);
