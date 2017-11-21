@@ -73,7 +73,7 @@ public class HardwareBotman
     public static final double LEFT_GRIPPER_OPEN  = 0 ;
     public static final double RIGHT_GRIPPER_CLOSED    =  0 ;
     public static final double LEFT_GRIPPER_CLOSED  = 1;
-    public static final double JEWEL_PUSHER_UP = 0.7; //TODO: Find Jewel Pusher Values
+    public static final double JEWEL_PUSHER_UP = 0.3; //TODO: Find Jewel Pusher Values
     public static final double JEWEL_PUSHER_DOWN = 1.0;
 
     //Establishes variables for motors
@@ -143,8 +143,27 @@ public class HardwareBotman
         rightClaw.setPosition(RIGHT_GRIPPER_CLOSED);
     }
 
+    //Code to run the wheels directly from four powers
+    void arrayDrive(double lf, double rf, double lb, double rb){
+        leftFrontDrive.setPower(lf);
+        rightFrontDrive.setPower(rf);
+        leftBackDrive.setPower(lb);
+        rightBackDrive.setPower(rb);
+    }
+
     //Code to run the wheels omnidirectionally
     void MecanumDrive(double angle, double magnitude, double rotation){  //Calculates and sends values to wheels
+
+        //Exceptions to find errors
+        if(angle>Math.PI || angle<0){
+            throw new IllegalArgumentException("Angle is outside range [0, 2pi]");
+        }
+        if(magnitude<0 || magnitude>1){
+            throw new IllegalArgumentException("Magnitude is outside range [0, 1]");
+        }
+        if(rotation<-1 || rotation>1){
+            throw new IllegalArgumentException("Rotation is outside range [-1, 1]");
+        }
 
         RawMotorSpeeds[0] = ((magnitude*(Math.sin(angle+(Math.PI/4))))+rotation);
         RawMotorSpeeds[1] = -((magnitude*(Math.cos(angle+(Math.PI/4))))-rotation);  //Generates Raw Values for Motors

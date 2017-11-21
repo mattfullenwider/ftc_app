@@ -44,6 +44,9 @@ public class BotmanTeleOp extends OpMode{
     /* Declare OpMode members. */
     HardwareBotman robot       = new HardwareBotman();
 
+    //Declares the power scaling of the robot
+    private static final double driveCurve = 1.0;
+
     private boolean isMecanum;
     private boolean bumperToggle;
 
@@ -80,7 +83,7 @@ public class BotmanTeleOp extends OpMode{
         }
 
         //calculates robot speed from the joystick's distance from the center
-        double magnitude = Math.pow(Range.clip(Math.sqrt(Math.pow(gamepad1.left_stick_x, 2) + Math.pow(gamepad1.left_stick_y, 2)), 0, 1), 3);
+        double magnitude = Math.pow(Range.clip(Math.sqrt(Math.pow(gamepad1.left_stick_x, 2) + Math.pow(gamepad1.left_stick_y, 2)), 0, 1), driveCurve);
 
         // How much the robot should turn while moving in that direction
         double rotation = Range.clip(gamepad1.right_stick_x, -1, 1);
@@ -104,33 +107,25 @@ public class BotmanTeleOp extends OpMode{
         }
 
         if (isMecanum){
-            robot.MecanumDrive(angle, magnitude, rotation);
+            robot.MecanumDrive(angle, magnitude, rotation); //Drives With mecanum
         }
+
         else{
-            robot.leftFrontDrive.setPower(left);
-            robot.leftBackDrive.setPower(left);
-            robot.rightFrontDrive.setPower(right);
-            robot.rightBackDrive.setPower(right);
-
-            if (gamepad1.right_bumper) {
-
-                robot.leftFrontDrive.setPower(-1);
-                robot.leftBackDrive.setPower(1);
-                robot.rightBackDrive.setPower(-1);
-                robot.rightFrontDrive.setPower(1);
-
+            if(!gamepad1.right_bumper && !gamepad1.left_bumper){ //Drives as tank
+                robot.arrayDrive(left, left, right, right);
             }
-
-            if (gamepad1.left_bumper) {
-
-                robot.leftFrontDrive.setPower(1);
-                robot.leftBackDrive.setPower(-1);
-                robot.rightBackDrive.setPower(1);
-                robot.rightFrontDrive.setPower(-1);
-
+            else if (gamepad1.right_bumper && !gamepad1.left_bumper) {  //Strafe right
+                robot.arrayDrive(-1, 1, -1, 1);
+            }
+            else if (!gamepad1.right_bumper) { //Strafe Left
+                robot.arrayDrive(1, -1, 1, -1);
+            }
+            else{
+                robot.arrayDrive(0, 0, 0, 0); //Stop
             }
         }
 
+        //Controls Gripper
         if (gamepad1.a){
             robot.gripperOpen();
         }
