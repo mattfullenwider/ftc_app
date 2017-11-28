@@ -87,6 +87,7 @@ public class BotmanTeleOp extends OpMode{
         robot.rightFrontDrive.setPower(right);
         robot.rightBackDrive.setPower(right);
 
+        //Moves robot right and left respecitvely
         if (gamepad1.right_bumper) {
 
             robot.leftFrontDrive.setPower(-1);

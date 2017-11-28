@@ -31,6 +31,7 @@ package org.firstinspires.ftc.team7234;
 
 import android.hardware.Sensor;
 
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -66,7 +67,8 @@ public class HardwareBotman
     public Servo    leftClaw    = null;
     public Servo    rightClaw   = null;
     public Servo jewelPusher = null;
-    public SensorMRColor jewelColorSensor = null;
+    public ColorSensor jewelColorSensor = null;
+    public float hsvValues[] = {0F, 0F, 0F};
 
     public static final double MID_SERVO       =  0.5 ;
     public static final double RIGHT_GRIPPER_OPEN    =  1 ;
