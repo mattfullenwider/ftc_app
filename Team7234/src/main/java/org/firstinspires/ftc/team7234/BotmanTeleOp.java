@@ -97,8 +97,6 @@ public class BotmanTeleOp extends OpMode{
 
         robot.arm.setPower(armStick);
 
-<<<<<<< HEAD
-=======
         if (bumperToggle){ //Toggles drive mode based on the x button
             if (gamepad1.x){
                 isMecanum = !isMecanum;
@@ -108,8 +106,6 @@ public class BotmanTeleOp extends OpMode{
         else if (!gamepad1.x) {
             bumperToggle = true;
         }
->>>>>>> origin/master
-
         if (isMecanum){
             robot.MecanumDrive(angle, magnitude, rotation); //Drives With mecanum
         }

@@ -43,11 +43,11 @@ import static com.sun.tools.javac.util.Constants.format;
 /**
  * Demonstrates empty OpMode
  */
-@Autonomous(name = "Botman Auto Test", group = "Example")
+@Autonomous(name = "Botman Auto Blue Far", group = "Example")
 //@Disabled
 public class BotmanAutoBlueFarSide extends OpMode {
 
-    RelicVuMarkIdentification2 relicVuMark = new RelicVuMarkIdentification2();
+    RelicVuMarkIdentification2 relicVuMarc = new RelicVuMarkIdentification2();
     HardwareBotman robot = new HardwareBotman();
 
     //Allows up to remember which key we read
@@ -65,7 +65,7 @@ public class BotmanAutoBlueFarSide extends OpMode {
     @Override
     public void init() {
         robot.init(hardwareMap);
-        relicVuMark.init();
+        relicVuMarc.init();
         telemetry.addData("Status", "Initialized");
     }
 
@@ -76,27 +76,27 @@ public class BotmanAutoBlueFarSide extends OpMode {
 
     @Override
     public void start() {
-        relicVuMark.start();
+        relicVuMarc.start();
 
     }
 
 
     @Override
     public void loop() {
-        relicVuMark.loop();
-        relicVuMark.vuMark = RelicRecoveryVuMark.from(relicVuMark.relicTemplate);
+        relicVuMarc.loop();
+        relicVuMarc.vuMark = RelicRecoveryVuMark.from(relicVuMarc.relicTemplate);
         switch (programState) {
 
             case KEY:
-                relicVuMark.pose = relicVuMark.relicTemplateListener.getPose();
-                if (format(relicVuMark.pose).equals("L")) {
-                    roboLocation = format(relicVuMark.pose);
+                relicVuMarc.pose = relicVuMarc.relicTemplateListener.getPose();
+                if (format(relicVuMarc.pose).equals("L")) {
+                    roboLocation = format(relicVuMarc.pose);
                 }
-                if (format(relicVuMark.pose).equals("C")) {
-                    roboLocation = format(relicVuMark.pose);
+                if (format(relicVuMarc.pose).equals("C")) {
+                    roboLocation = format(relicVuMarc.pose);
                 }
-                if (format(relicVuMark.pose).equals("R")) {
-                    roboLocation = format(relicVuMark.pose);
+                if (format(relicVuMarc.pose).equals("R")) {
+                    roboLocation = format(relicVuMarc.pose);
                 }
                 telemetry.addData("We are seeing %s", roboLocation);
                 break;
@@ -105,7 +105,7 @@ public class BotmanAutoBlueFarSide extends OpMode {
                 Color.RGBToHSV(robot.jewelColorSensor.red() * 8, robot.jewelColorSensor.green() * 8, robot.jewelColorSensor.blue() * 8, robot.hsvValues);
                 break;
 
-            case MOVE:
+            /*case MOVE:
                 //Manuever infront of the box
                 break;
 
@@ -125,7 +125,7 @@ public class BotmanAutoBlueFarSide extends OpMode {
                 break;
 
             case SCORE:
-                //Score glyph
+                //Score glyph*/
         }
 
 
