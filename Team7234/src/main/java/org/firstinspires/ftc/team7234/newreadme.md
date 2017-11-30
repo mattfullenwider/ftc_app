@@ -39,7 +39,6 @@ robot for FTC Relic Recovery.
             + Runs the wheels using angle, magnitude and rotation
             + Uses equations calculated by Team 2022, and available at <http://thinktank.wpi.edu/resources/346/ControllingMecanumDrive.pdf>
             + Values have limited range, values outside those ranges will throw IllegalArgumentException
-                + Angle must be within [0, 2π]
                 + Magnitude must be within [0, 1]
                 + Rotation must be within [-1, 1]
         + gripperOpen
@@ -49,8 +48,6 @@ robot for FTC Relic Recovery.
 ##Credits
 This code was contributed to by:
 
-Donald Brown
-
-Ricky Harris
-
-Matt Fullenwider
+####Donald Brown
+####Ricky Harris
+####Matt Fullenwider

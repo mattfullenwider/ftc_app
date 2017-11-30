@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 import com.sun.tools.javac.comp.Todo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.team7234.HardwareBotman;
 
 @TeleOp(name="BotmanTeleOp", group="Pushbot")
@@ -76,7 +77,7 @@ public class BotmanTeleOp extends OpMode{
     @Override
     public void loop() {
         //TODO: decide on an optimal control scheme and controller count
-        //calculates angle in radians based on joystick position
+        //calculates angle in radians based on joystick position, reports in range [-Pi/2, 3Pi/2]
         double angle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) + (Math.PI / 2);
         if (Double.isNaN(angle)){
             angle = 0;              //Prevents NaN error later in the Program
@@ -132,6 +133,21 @@ public class BotmanTeleOp extends OpMode{
         else if (gamepad1.b){
             robot.gripperClose();
         }
+
+        telemetry.addData("isMecanum: ", isMecanum);
+        telemetry.addLine();
+        telemetry.addData("Angle: ", angle);
+        telemetry.addData("Magnitude: ", magnitude);
+        telemetry.addData("Rotation: ", rotation);
+        telemetry.addLine();
+        telemetry.addData("X: ", gamepad1.left_stick_x);
+        telemetry.addData("Y: ", gamepad1.left_stick_y);
+        telemetry.addLine();
+        telemetry.addData("FL: ", robot.SpeedsList[0]);
+        telemetry.addData("FR: ", robot.SpeedsList[1]);
+        telemetry.addData("BR: ", robot.SpeedsList[2]);
+        telemetry.addData("BL: ", robot.SpeedsList[3]);
+
 
     }
 

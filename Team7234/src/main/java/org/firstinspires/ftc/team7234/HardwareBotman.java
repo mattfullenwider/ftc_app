@@ -155,15 +155,19 @@ public class HardwareBotman
     void MecanumDrive(double angle, double magnitude, double rotation){  //Calculates and sends values to wheels
 
         //Exceptions to find errors
-        if(angle>Math.PI || angle<0){
-            throw new IllegalArgumentException("Angle is outside range [0, 2pi]");
+
+
+        if(angle> 1.5 *Math.PI || angle< -0.5*Math.PI){
+            throw new IllegalArgumentException("Angle is outside range [-pi/2, 3pi/2]. Invalid Value is: " + Double.toString(angle));
         }
+
         if(magnitude<0 || magnitude>1){
-            throw new IllegalArgumentException("Magnitude is outside range [0, 1]");
+            throw new IllegalArgumentException("Magnitude is outside range [0, 1]. Invalid Value is: " + Double.toString(magnitude));
         }
         if(rotation<-1 || rotation>1){
-            throw new IllegalArgumentException("Rotation is outside range [-1, 1]");
+            throw new IllegalArgumentException("Rotation is outside range [-1, 1]. Invalid Value is: " + Double.toString(rotation));
         }
+
 
         RawMotorSpeeds[0] = ((magnitude*(Math.sin(angle+(Math.PI/4))))+rotation);
         RawMotorSpeeds[1] = -((magnitude*(Math.cos(angle+(Math.PI/4))))-rotation);  //Generates Raw Values for Motors
@@ -188,6 +192,7 @@ public class HardwareBotman
 
         for (int i =0; i<4; i++){
             SpeedsList[i] = this.clip(FinalMotorSpeeds[i], -1.0, 1.0);  //Makes sure values are in range [-1, 1], just in case
+
             driveMotors[i].setPower(SpeedsList[i]);
         }
 
