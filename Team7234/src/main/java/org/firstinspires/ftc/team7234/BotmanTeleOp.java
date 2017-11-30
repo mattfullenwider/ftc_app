@@ -96,21 +96,7 @@ public class BotmanTeleOp extends OpMode{
         double armStick = gamepad1.left_trigger - gamepad1.right_trigger;
 
         robot.arm.setPower(armStick);
-<<<<<<< HEAD
-=======
-        robot.leftFrontDrive.setPower(left);
-        robot.leftBackDrive.setPower(left);
-        robot.rightFrontDrive.setPower(right);
-        robot.rightBackDrive.setPower(right);
 
-        //Moves robot right and left respecitvely
-        if (gamepad1.right_bumper) {
-
-            robot.leftFrontDrive.setPower(-1);
-            robot.leftBackDrive.setPower(1);
-            robot.rightBackDrive.setPower(-1);
-            robot.rightFrontDrive.setPower(1);
->>>>>>> refs/remotes/Leo352/master
 
         if (bumperToggle){ //Toggles drive mode based on the x button
             if (gamepad1.x){
