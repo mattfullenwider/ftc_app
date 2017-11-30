@@ -31,6 +31,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package org.firstinspires.ftc.team7234;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -41,7 +43,6 @@ import org.firstinspires.ftc.team7234.RelicVuMarkIdentification2;
 import org.firstinspires.ftc.team7234.HardwareBotman;
 
 import static com.sun.tools.javac.util.Constants.format;
-import java.util.Random;
 
 /**
  * Demonstrates empty OpMode
@@ -53,7 +54,17 @@ public class BotmanAutoSkeleton extends OpMode {
     RelicVuMarkIdentification2 relicVuMark = new RelicVuMarkIdentification2();
     HardwareBotman robot = new HardwareBotman();
 
-    Random LRC = new Random();
+    //Allows up to remember which key we read
+    public java.lang.String roboLocation;
+
+    currentState programState = currentState.KEY;
+    public enum currentState {
+        KEY,
+        JEWELS,
+        MOVE,
+        TURN_AND_ADJUST,
+        SCORE
+    }
 
     @Override
     public void init() {
@@ -78,36 +89,47 @@ public class BotmanAutoSkeleton extends OpMode {
     public void loop() {
         relicVuMark.loop();
         relicVuMark.vuMark = RelicRecoveryVuMark.from(relicVuMark.relicTemplate);
-        if (relicVuMark.vuMark != RelicRecoveryVuMark.UNKNOWN) {
+        switch (programState) {
 
-            relicVuMark.pose = relicVuMark.relicTemplateListener.getPose();
-            if (format(relicVuMark.pose).equals("L")){
-                //Do thing for left glyph position
-            }
-            if (format(relicVuMark.pose).equals("C")){
-                //Do thing for center glyph position
-            }
-            if (format(relicVuMark.pose).equals("R")){
-                //Do thing for right glyph position
-            }
-        }
-        //The else statement chooses a random integer and uses a position based on it
-        //This is only to look like we know what we are doing
-        //If you want, we can just go for the middle if we cannot detect the image, but I like this better.
-        else {
-            int randInt = LRC.nextInt(2);
-            telemetry.addData("Random Integer is %s", randInt);
-            if (randInt == 0){
-                //Do thing for left glyph position
-            }
-            if (randInt == 1){
-                //Do thing for center glyph position
-            }
-            if (randInt == 2){
-                //Do thing for right glyph position
-            }
+            case KEY:
+                relicVuMark.pose = relicVuMark.relicTemplateListener.getPose();
+                if (format(relicVuMark.pose).equals("L")) {
+                    roboLocation = format(relicVuMark.pose);
+                }
+                if (format(relicVuMark.pose).equals("C")) {
+                    roboLocation = format(relicVuMark.pose);
+                }
+                if (format(relicVuMark.pose).equals("R")) {
+                    roboLocation = format(relicVuMark.pose);
+                }
+                telemetry.addData("We are seeing %s", roboLocation);
+                break;
 
+            case JEWELS:
+                Color.RGBToHSV(robot.jewelColorSensor.red() * 8, robot.jewelColorSensor.green() * 8, robot.jewelColorSensor.blue() * 8, robot.hsvValues);
+                break;
+
+            case MOVE:
+                //Manuever infront of the box
+                break;
+
+            case TURN_AND_ADJUST:
+                if(roboLocation.equals("L")){
+                    //Line up for left
+                }
+                if(roboLocation.equals("C")){
+                    //Line up for center
+                }
+                if(roboLocation.equals("R")){
+                    //Line up for right
+                }
+                break;
+
+            case SCORE:
+                //Score glyph
         }
+
+
     }
 
 
