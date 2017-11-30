@@ -33,7 +33,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
+import com.sun.tools.javac.comp.Todo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.team7234.HardwareBotman;
 
 @TeleOp(name="BotmanTeleOp", group="Pushbot")
@@ -43,10 +45,18 @@ public class BotmanTeleOp extends OpMode{
     /* Declare OpMode members. */
     HardwareBotman robot       = new HardwareBotman();
 
+    //Declares the power scaling of the robot
+    private static final double driveCurve = 1.0;
+
+    private boolean isMecanum;
+    private boolean bumperToggle;
+
     @Override
     public void init() {
 
         robot.init(hardwareMap);
+        isMecanum = true;
+        bumperToggle = true;
     }
 
 
@@ -66,39 +76,81 @@ public class BotmanTeleOp extends OpMode{
      */
     @Override
     public void loop() {
-
-        //calculates angle in radians based on joystick position
+        //TODO: decide on an optimal control scheme and controller count
+        //calculates angle in radians based on joystick position, reports in range [-Pi/2, 3Pi/2]
         double angle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) + (Math.PI / 2);
         if (Double.isNaN(angle)){
             angle = 0;              //Prevents NaN error later in the Program
         }
 
-        double magnitude = Range.clip(Math.sqrt(Math.pow(gamepad1.left_stick_x, 2) + Math.pow(gamepad1.left_stick_y, 2)), 0, 1);
-        //calculates robot speed from
+        //calculates robot speed from the joystick's distance from the center
+        double magnitude = Math.pow(Range.clip(Math.sqrt(Math.pow(gamepad1.left_stick_x, 2) + Math.pow(gamepad1.left_stick_y, 2)), 0, 1), driveCurve);
 
+        // How much the robot should turn while moving in that direction
+        double rotation = Range.clip(gamepad1.right_stick_x, -1, 1);
 
+        //Variables for tank drive
         double left = -gamepad1.left_stick_y;
         double right = -gamepad1.right_stick_y;
-        double armStick = -gamepad2.left_stick_y;
+        //double armStick = -gamepad2.left_stick_y;
+        double armStick = gamepad1.left_trigger - gamepad1.right_trigger;
 
         robot.arm.setPower(armStick);
 
+<<<<<<< HEAD
+=======
+        if (bumperToggle){ //Toggles drive mode based on the x button
+            if (gamepad1.x){
+                isMecanum = !isMecanum;
+                bumperToggle = false;
+            }
+        }
+        else if (!gamepad1.x) {
+            bumperToggle = true;
+        }
+>>>>>>> origin/master
 
-        if (gamepad1.left_bumper) {
-
-            robot.leftFrontDrive.setPower(1);
-            robot.leftBackDrive.setPower(-1);
-            robot.rightBackDrive.setPower(1);
-            robot.rightFrontDrive.setPower(-1);
-
+        if (isMecanum){
+            robot.MecanumDrive(angle, magnitude, rotation); //Drives With mecanum
         }
 
-        if (gamepad2.a){
+        else{
+            if(!gamepad1.right_bumper && !gamepad1.left_bumper){ //Drives as tank
+                robot.arrayDrive(left, left, right, right);
+            }
+            else if (gamepad1.right_bumper && !gamepad1.left_bumper) {  //Strafe right
+                robot.arrayDrive(-1, 1, -1, 1);
+            }
+            else if (!gamepad1.right_bumper) { //Strafe Left
+                robot.arrayDrive(1, -1, 1, -1);
+            }
+            else{
+                robot.arrayDrive(0, 0, 0, 0); //Stop
+            }
+        }
+
+        //Controls Gripper
+        if (gamepad1.a){
             robot.gripperOpen();
         }
-        if (gamepad2.b){
+        else if (gamepad1.b){
             robot.gripperClose();
         }
+
+        telemetry.addData("isMecanum: ", isMecanum);
+        telemetry.addLine();
+        telemetry.addData("Angle: ", angle);
+        telemetry.addData("Magnitude: ", magnitude);
+        telemetry.addData("Rotation: ", rotation);
+        telemetry.addLine();
+        telemetry.addData("X: ", gamepad1.left_stick_x);
+        telemetry.addData("Y: ", gamepad1.left_stick_y);
+        telemetry.addLine();
+        telemetry.addData("FL: ", robot.SpeedsList[0]);
+        telemetry.addData("FR: ", robot.SpeedsList[1]);
+        telemetry.addData("BR: ", robot.SpeedsList[2]);
+        telemetry.addData("BL: ", robot.SpeedsList[3]);
+
 
     }
 

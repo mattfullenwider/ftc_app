@@ -74,7 +74,9 @@ public class HardwareBotman
     public static final double RIGHT_GRIPPER_OPEN    =  1 ;
     public static final double LEFT_GRIPPER_OPEN  = 0 ;
     public static final double RIGHT_GRIPPER_CLOSED    =  0 ;
-    public static final double LEFT_GRIPPER_CLOSED  = 1 ;
+    public static final double LEFT_GRIPPER_CLOSED  = 1;
+    public static final double JEWEL_PUSHER_UP = 0.3; //TODO: Find Jewel Pusher Values
+    public static final double JEWEL_PUSHER_DOWN = 1.0;
 
     //Establishes variables for motors
     double[] RawMotorSpeeds = {0.0, 0.0, 0.0, 0.0};
@@ -103,8 +105,8 @@ public class HardwareBotman
         leftBackDrive = hwMap.get(DcMotor.class, "left Back Drive");
         rightBackDrive = hwMap.get(DcMotor.class, "right Back Drive");
         arm    = hwMap.get(DcMotor.class, "arm");
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
+        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
@@ -126,8 +128,10 @@ public class HardwareBotman
         // Define and initialize ALL installed servos.
         leftClaw  = hwMap.get(Servo.class, "leftClaw");
         rightClaw = hwMap.get(Servo.class, "rightClaw");
+        jewelPusher = hwMap.get(Servo.class, "jewelPusher");
         leftClaw.setPosition(MID_SERVO);
         rightClaw.setPosition(MID_SERVO);
+        jewelPusher.setPosition(JEWEL_PUSHER_UP);
 
         driveMotors  = new DcMotor[] {leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive};
     }
@@ -141,8 +145,31 @@ public class HardwareBotman
         rightClaw.setPosition(RIGHT_GRIPPER_CLOSED);
     }
 
+    //Code to run the wheels directly from four powers
+    void arrayDrive(double lf, double rf, double lb, double rb){
+        leftFrontDrive.setPower(lf);
+        rightFrontDrive.setPower(rf);
+        leftBackDrive.setPower(lb);
+        rightBackDrive.setPower(rb);
+    }
+
     //Code to run the wheels omnidirectionally
     void MecanumDrive(double angle, double magnitude, double rotation){  //Calculates and sends values to wheels
+
+        //Exceptions to find errors
+
+
+        if(angle> 1.5 *Math.PI || angle< -0.5*Math.PI){
+            throw new IllegalArgumentException("Angle is outside range [-pi/2, 3pi/2]. Invalid Value is: " + Double.toString(angle));
+        }
+
+        if(magnitude<0 || magnitude>1){
+            throw new IllegalArgumentException("Magnitude is outside range [0, 1]. Invalid Value is: " + Double.toString(magnitude));
+        }
+        if(rotation<-1 || rotation>1){
+            throw new IllegalArgumentException("Rotation is outside range [-1, 1]. Invalid Value is: " + Double.toString(rotation));
+        }
+
 
         RawMotorSpeeds[0] = ((magnitude*(Math.sin(angle+(Math.PI/4))))+rotation);
         RawMotorSpeeds[1] = -((magnitude*(Math.cos(angle+(Math.PI/4))))-rotation);  //Generates Raw Values for Motors
@@ -167,6 +194,7 @@ public class HardwareBotman
 
         for (int i =0; i<4; i++){
             SpeedsList[i] = this.clip(FinalMotorSpeeds[i], -1.0, 1.0);  //Makes sure values are in range [-1, 1], just in case
+
             driveMotors[i].setPower(SpeedsList[i]);
         }
 
