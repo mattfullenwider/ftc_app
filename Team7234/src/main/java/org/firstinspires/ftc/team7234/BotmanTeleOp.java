@@ -82,20 +82,7 @@ public class BotmanTeleOp extends OpMode{
         double armStick = -gamepad2.left_stick_y;
 
         robot.arm.setPower(armStick);
-        robot.leftFrontDrive.setPower(left);
-        robot.leftBackDrive.setPower(left);
-        robot.rightFrontDrive.setPower(right);
-        robot.rightBackDrive.setPower(right);
 
-        //Moves robot right and left respecitvely
-        if (gamepad1.right_bumper) {
-
-            robot.leftFrontDrive.setPower(-1);
-            robot.leftBackDrive.setPower(1);
-            robot.rightBackDrive.setPower(-1);
-            robot.rightFrontDrive.setPower(1);
-
-        }
 
         if (gamepad1.left_bumper) {
 

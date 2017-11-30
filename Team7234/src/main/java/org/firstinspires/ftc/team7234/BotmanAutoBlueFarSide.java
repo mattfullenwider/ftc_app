@@ -34,13 +34,9 @@ package org.firstinspires.ftc.team7234;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.team7234.RelicVuMarkIdentification2;
-import org.firstinspires.ftc.team7234.HardwareBotman;
 
 import static com.sun.tools.javac.util.Constants.format;
 
@@ -49,13 +45,13 @@ import static com.sun.tools.javac.util.Constants.format;
  */
 @Autonomous(name = "Botman Auto Test", group = "Example")
 //@Disabled
-public class BotmanAutoSkeleton extends OpMode {
+public class BotmanAutoBlueFarSide extends OpMode {
 
     RelicVuMarkIdentification2 relicVuMark = new RelicVuMarkIdentification2();
     HardwareBotman robot = new HardwareBotman();
 
     //Allows up to remember which key we read
-    public java.lang.String roboLocation;
+    public String roboLocation;
 
     currentState programState = currentState.KEY;
     public enum currentState {
@@ -124,7 +120,7 @@ public class BotmanAutoSkeleton extends OpMode {
                     //Line up for right
                 }
                 else{
-                    //Line up for something useful
+                    //something
                 }
                 break;
 
