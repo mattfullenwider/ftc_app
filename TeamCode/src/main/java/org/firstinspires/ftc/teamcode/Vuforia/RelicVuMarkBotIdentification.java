@@ -29,69 +29,48 @@
 package org.firstinspires.ftc.teamcode.Vuforia;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-@Autonomous(name = "Relic VuMarkBot Id", group = "Vuforia")
+
+@Autonomous(name = "Relic VuMark Id", group = "Vuforia")
 //@Disabled
-public class RelicVuMarkIdentification extends OpMode {
+public class RelicVuMarkBotIdentification extends OpMode {
 
     public static final String TAG = "Vuforia VuMark Sample";
     private OpenGLMatrix pose = null;
-
-    private VuforiaLocalizer vuforia;
-    private VuforiaLocalizer.Parameters parameters;
-    private VuforiaTrackables relicTrackables;
-    private VuforiaTrackable relicTemplate;
     private RelicRecoveryVuMark vuMark;
-    private VuforiaTrackableDefaultListener relicTemplateListener;
+
+    RelicVuMarkBot robot = new RelicVuMarkBot();
 
     @Override
     public void init() {
-
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        parameters.vuforiaLicenseKey = "AcZlc3n/////AAAAGWPeDCNLuk38gPuwF9cpyK2BYbGciGSeJy9AkSXPprQUEtg/VxgqB6j9WJuQvGo4pq+h4gwPSd134WD707FXnbuJjqdqkh5/92mATPs96WQ2RVoaU8QLbsJonufIl2T6qqqT83aOJHbz34mGJszad+Mw7VAWM11av5ltOoq8/rSKbmSFxAVi3d7oiT3saE0XBx4svhpGLwauy6Y0L7X0fC7FwHKCnw/RPL4V+Q8v2rtCTOwvjfnjxmRMind01HSWcxd9ppBwzvHVCPhePccnyWVv5jNiYXia9r4FlrJpAPgZ1GsCfdbt6AoT6Oh2Hnx267J+MHUnLi/C+0brvnQfcDregLBfnZApfd2c1WDiXJp/";
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-
-        /**
-         * Load the data set containing the VuMarks for Relic Recovery. There's only one trackable
-         * in this data set: all three of the VuMarks in the game were created from this one template,
-         * but differ in their instance id information.
-         * @see VuMarkInstanceId
-         */
-        relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-        relicTemplate = relicTrackables.get(0);
-        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
-        relicTemplateListener = (VuforiaTrackableDefaultListener) relicTemplate.getListener();
+        robot.vuforiaInit(hardwareMap);
     }
 
     @Override
     public void start() {
-        relicTrackables.activate();
+        robot.startVuforia();
     }
 
     @Override
     public void loop() {
 
-        vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        vuMark = robot.readKey();
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
 
             telemetry.addData("VuMark", "%s visible", vuMark);
-            pose = relicTemplateListener.getPose();
+            pose = robot.readPosition();
             telemetry.addData("Pose", format(pose));
         } else {
             telemetry.addData("VuMark", "not visible");
         }
+    }
+
+    @Override
+    public void stop() {
+        robot.stopVuforia();
     }
 
 
