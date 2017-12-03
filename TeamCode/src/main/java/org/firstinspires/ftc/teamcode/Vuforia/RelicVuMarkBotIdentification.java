@@ -34,13 +34,13 @@ import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 
-@Autonomous(name = "Relic VuMark Id", group = "Vuforia")
+@Autonomous(name = "Relic VuMarkBot Id", group = "Vuforia")
 //@Disabled
 public class RelicVuMarkBotIdentification extends OpMode {
 
     public static final String TAG = "Vuforia VuMark Sample";
     private OpenGLMatrix pose = null;
-    private RelicRecoveryVuMark vuMark;
+    private RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.UNKNOWN;
 
     RelicVuMarkBot robot = new RelicVuMarkBot();
 
@@ -57,14 +57,14 @@ public class RelicVuMarkBotIdentification extends OpMode {
     @Override
     public void loop() {
 
-        vuMark = robot.readKey();
-        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-
+        if (robot.readKey() != RelicRecoveryVuMark.UNKNOWN) {
+            vuMark = robot.readKey();
             telemetry.addData("VuMark", "%s visible", vuMark);
-            pose = robot.readPosition();
-            telemetry.addData("Pose", format(pose));
+            //pose = robot.readPosition();
+            //telemetry.addData("Pose", format(pose));
         } else {
             telemetry.addData("VuMark", "not visible");
+            telemetry.addData("VuMark", "%s saved", vuMark);
         }
     }
 

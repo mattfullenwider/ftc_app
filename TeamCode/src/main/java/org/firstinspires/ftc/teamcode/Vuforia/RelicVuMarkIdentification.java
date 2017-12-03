@@ -40,7 +40,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-@Autonomous(name = "Relic VuMarkBot Id", group = "Vuforia")
+@Autonomous(name = "Relic VuMark Id", group = "Vuforia")
 //@Disabled
 public class RelicVuMarkIdentification extends OpMode {
 
