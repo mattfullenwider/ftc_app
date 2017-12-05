@@ -94,6 +94,7 @@ public class HardwareBotman
 
     }
 
+    //region Hardware Map
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
@@ -135,7 +136,8 @@ public class HardwareBotman
 
         driveMotors  = new DcMotor[] {leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive};
     }
-
+    //endregion
+    //region Gripper Control
     public void gripperOpen() {
         leftClaw.setPosition(LEFT_GRIPPER_OPEN);
         rightClaw.setPosition(RIGHT_GRIPPER_OPEN);
@@ -144,6 +146,9 @@ public class HardwareBotman
         leftClaw.setPosition(LEFT_GRIPPER_CLOSED);
         rightClaw.setPosition(RIGHT_GRIPPER_CLOSED);
     }
+    //endregion
+    //region Robot Driving
+
 
     //Code to run the wheels directly from four powers
     void arrayDrive(double lf, double rf, double lb, double rb){
@@ -199,6 +204,8 @@ public class HardwareBotman
         }
 
     }
+    //endregion
+
 
     //Function to limit values to a range
     private double clip(double input, double min, double max){   //Method for clipping a value within a range

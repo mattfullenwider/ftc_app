@@ -29,14 +29,9 @@
 
 package org.firstinspires.ftc.team7234;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
-import com.sun.tools.javac.comp.Todo;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.team7234.HardwareBotman;
 
 @TeleOp(name="BotmanTeleOp", group="Pushbot")
 //@Disabled
@@ -44,39 +39,37 @@ public class BotmanTeleOp extends OpMode{
 
     /* Declare OpMode members. */
     HardwareBotman robot       = new HardwareBotman();
-
+    //region Local Variable Declaration
     //Declares the power scaling of the robot
     private static final double driveCurve = 1.0;
-
+    private double driveMultiplier = 1.0;
     private boolean isMecanum;
-    private boolean bumperToggle;
-
+    private boolean buttonToggle;
+    private boolean gripperClosed;
+    private boolean gripperToggle;
+    private boolean speedControl;
+    private boolean speedToggle;
+    //endregion
     @Override
     public void init() {
-
         robot.init(hardwareMap);
+        //region Boolean Initialization
         isMecanum = true;
-        bumperToggle = true;
+        buttonToggle = true;
+        gripperClosed = true;
+        gripperToggle = true;
+        speedToggle = true;
+        speedControl = false;
+        //endregion
     }
-
-
     @Override
-    public void init_loop() {
-    }
-
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
+    public void init_loop(){}
     @Override
-    public void start() {
-    }
-
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
+    public void start(){}
     @Override
     public void loop() {
-        //TODO: decide on an optimal control scheme and controller count
+        //region Drive Variables
+        
         //calculates angle in radians based on joystick position, reports in range [-Pi/2, 3Pi/2]
         double angle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) + (Math.PI / 2);
         if (Double.isNaN(angle)){
@@ -84,7 +77,7 @@ public class BotmanTeleOp extends OpMode{
         }
 
         //calculates robot speed from the joystick's distance from the center
-        double magnitude = Math.pow(Range.clip(Math.sqrt(Math.pow(gamepad1.left_stick_x, 2) + Math.pow(gamepad1.left_stick_y, 2)), 0, 1), driveCurve);
+        double magnitude = driveMultiplier*Math.pow(Range.clip(Math.sqrt(Math.pow(gamepad1.left_stick_x, 2) + Math.pow(gamepad1.left_stick_y, 2)), 0, 1), driveCurve);
 
         // How much the robot should turn while moving in that direction
         double rotation = Range.clip(gamepad1.right_stick_x, -1, 1);
@@ -93,25 +86,37 @@ public class BotmanTeleOp extends OpMode{
         double left = -gamepad1.left_stick_y;
         double right = -gamepad1.right_stick_y;
         //double armStick = -gamepad2.left_stick_y;
-        double armStick = gamepad1.left_trigger - gamepad1.right_trigger;
+        double armStick = gamepad2.left_trigger - gamepad2.right_trigger;
 
-        robot.arm.setPower(armStick);
-
-
-        if (bumperToggle){ //Toggles drive mode based on the x button
+        if (buttonToggle){ //Toggles drive mode based on the x button
             if (gamepad1.x){
                 isMecanum = !isMecanum;
-                bumperToggle = false;
+                buttonToggle = false;
             }
         }
         else if (!gamepad1.x) {
-            bumperToggle = true;
+            buttonToggle = true;
         }
 
+        if (speedToggle){
+            if(gamepad1.b){
+                speedControl = !speedControl;
+                speedToggle = false;
+            }
+        }
+        else if (!gamepad1.b){
+            speedToggle = true;
+        }
+        driveMultiplier = speedControl ? 1 : 0.5;
+        //endregion
+        //region Robot Control
+        
+
+        //Sends Power to the Robot Arm
+        robot.arm.setPower(armStick);
         if (isMecanum){
-            robot.MecanumDrive(angle, magnitude, rotation); //Drives With mecanum
+            robot.MecanumDrive(angle, magnitude, rotation); //Drives Omnidirectionally
         }
-
         else{
             if(!gamepad1.right_bumper && !gamepad1.left_bumper){ //Drives as tank
                 robot.arrayDrive(left, left, right, right);
@@ -126,16 +131,32 @@ public class BotmanTeleOp extends OpMode{
                 robot.arrayDrive(0, 0, 0, 0); //Stop
             }
         }
-
-        //Controls Gripper
-        if (gamepad1.a){
+        
+        //endregion
+        //region Gripper Control
+        
+        if (gripperToggle){
+            if (gamepad2.a){
+                gripperClosed = !gripperClosed;
+                gripperToggle = false;
+            }
+        }
+        else if (!gamepad2.a){
+            gripperToggle = true;
+        }
+        if (!gripperClosed){
             robot.gripperOpen();
         }
-        else if (gamepad1.b){
+        else{
             robot.gripperClose();
         }
+        
+        //endregion
+        //region Telemetry
 
         telemetry.addData("isMecanum: ", isMecanum);
+        telemetry.addData("gripperClosed: ", gripperClosed);
+        telemetry.addData("Speed Limited to: ", driveMultiplier);
         telemetry.addLine();
         telemetry.addData("Angle: ", angle);
         telemetry.addData("Magnitude: ", magnitude);
@@ -148,14 +169,9 @@ public class BotmanTeleOp extends OpMode{
         telemetry.addData("FR: ", robot.SpeedsList[1]);
         telemetry.addData("BR: ", robot.SpeedsList[2]);
         telemetry.addData("BL: ", robot.SpeedsList[3]);
-
-
+        
+        //endregion
     }
-
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
     @Override
-    public void stop() {
-    }
+    public void stop(){}
 }
