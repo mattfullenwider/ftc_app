@@ -106,7 +106,6 @@ public class BotmanTeleOp extends OpMode{
         else if (!gamepad1.x) {
             bumperToggle = true;
         }
-
         if (isMecanum){
             robot.MecanumDrive(angle, magnitude, rotation); //Drives With mecanum
         }
