@@ -128,6 +128,7 @@ public class HardwareBotman
     }
     //endregion
     //region Gripper Control
+
     void gripperOpen() {
         leftClaw.setPosition(LEFT_GRIPPER_OPEN);
         rightClaw.setPosition(RIGHT_GRIPPER_OPEN);
@@ -144,7 +145,6 @@ public class HardwareBotman
         leftBackDrive.setPower(lb);
         rightBackDrive.setPower(rb);
     }
-    //Code to run the wheels omnidirectionally
     void MecanumDrive(double angle, double magnitude, double rotation){  //Calculates and sends values to wheels
         //region Exceptions
         if(angle> 1.5 *Math.PI || angle< -0.5*Math.PI){

@@ -110,10 +110,9 @@ public class BotmanTeleOp extends OpMode{
         driveMultiplier = speedControl ? 1 : 0.5;
         //endregion
         //region Robot Control
-        
-
         //Sends Power to the Robot Arm
         robot.arm.setPower(armStick);
+        //Drives the robot
         if (isMecanum){
             robot.MecanumDrive(angle, magnitude, rotation); //Drives Omnidirectionally
         }
