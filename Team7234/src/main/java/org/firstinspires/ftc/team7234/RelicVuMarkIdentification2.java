@@ -37,6 +37,7 @@ package org.firstinspires.ftc.team7234;
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -49,7 +50,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 @Autonomous(name = "Relic VuMark Id", group = "Vuforia")
 //@Disabled
-public class RelicVuMarkIdentification2 extends OpMode {
+public class RelicVuMarkIdentification2 {
+
 
     public static final String TAG = "Vuforia VuMark Sample";
     public OpenGLMatrix pose = null;
@@ -61,10 +63,14 @@ public class RelicVuMarkIdentification2 extends OpMode {
     public RelicRecoveryVuMark vuMark;
     public VuforiaTrackableDefaultListener relicTemplateListener;
 
-    @Override
-    public void init() {
+    HardwareMap hwmap = null;
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+
+    public void init(HardwareMap ahwmap) {
+
+        hwmap = ahwmap;
+
+        int cameraMonitorViewId = hwmap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwmap.appContext.getPackageName());
         parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         parameters.vuforiaLicenseKey = "AcZlc3n/////AAAAGWPeDCNLuk38gPuwF9cpyK2BYbGciGSeJy9AkSXPprQUEtg/VxgqB6j9WJuQvGo4pq+h4gwPSd134WD707FXnbuJjqdqkh5/92mATPs96WQ2RVoaU8QLbsJonufIl2T6qqqT83aOJHbz34mGJszad+Mw7VAWM11av5ltOoq8/rSKbmSFxAVi3d7oiT3saE0XBx4svhpGLwauy6Y0L7X0fC7FwHKCnw/RPL4V+Q8v2rtCTOwvjfnjxmRMind01HSWcxd9ppBwzvHVCPhePccnyWVv5jNiYXia9r4FlrJpAPgZ1GsCfdbt6AoT6Oh2Hnx267J+MHUnLi/C+0brvnQfcDregLBfnZApfd2c1WDiXJp/";
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
@@ -82,22 +88,15 @@ public class RelicVuMarkIdentification2 extends OpMode {
         relicTemplateListener = (VuforiaTrackableDefaultListener) relicTemplate.getListener();
     }
 
-    @Override
+
     public void start() {
         relicTrackables.activate();
     }
 
-    @Override
-    public void loop() {
-        vuMark = RelicRecoveryVuMark.from(relicTemplate);
-        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
 
-            telemetry.addData("VuMark", "%s visible", vuMark);
-            pose = relicTemplateListener.getPose();
-            telemetry.addData("Pose", format(pose));
-        } else {
-            telemetry.addData("VuMark", "not visible");
-        }
+    public RelicRecoveryVuMark readKey() {
+        return RelicRecoveryVuMark.from(relicTemplate);
+
     }
 
 

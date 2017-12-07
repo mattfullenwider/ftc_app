@@ -53,9 +53,7 @@ public class BotmanAutoSkeleton extends OpMode {
 
     RelicVuMarkIdentification2 relicVuMark = new RelicVuMarkIdentification2();
     HardwareBotman robot = new HardwareBotman();
-
-    //Allows up to remember which key we read
-    public java.lang.String roboLocation;
+    RelicRecoveryVuMark keyFinder;
 
     currentState programState = currentState.KEY;
     public enum currentState {
@@ -69,9 +67,10 @@ public class BotmanAutoSkeleton extends OpMode {
     @Override
     public void init() {
         robot.init(hardwareMap);
-        relicVuMark.init();
+        relicVuMark.init(hardwareMap);
         telemetry.addData("Status", "Initialized");
     }
+
 
 
     @Override
@@ -87,49 +86,61 @@ public class BotmanAutoSkeleton extends OpMode {
 
     @Override
     public void loop() {
-        relicVuMark.loop();
+        keyFinder = relicVuMark.readKey();
+        if (relicVuMark.vuMark != RelicRecoveryVuMark.UNKNOWN) {
+
+            telemetry.addData("VuMark", "%s visible", keyFinder);
+        } else {
+            telemetry.addData("VuMark", "not visible");
+        }
         relicVuMark.vuMark = RelicRecoveryVuMark.from(relicVuMark.relicTemplate);
         switch (programState) {
 
             case KEY:
-                relicVuMark.pose = relicVuMark.relicTemplateListener.getPose();
-                if (format(relicVuMark.pose).equals("L")) {
-                    roboLocation = format(relicVuMark.pose);
-                }
-                if (format(relicVuMark.pose).equals("C")) {
-                    roboLocation = format(relicVuMark.pose);
-                }
-                if (format(relicVuMark.pose).equals("R")) {
-                    roboLocation = format(relicVuMark.pose);
-                }
-                telemetry.addData("We are seeing %s", roboLocation);
+
+                telemetry.addData("We are seeing", keyFinder);
+                programState = currentState.JEWELS;
                 break;
 
             case JEWELS:
                 Color.RGBToHSV(robot.jewelColorSensor.red() * 8, robot.jewelColorSensor.green() * 8, robot.jewelColorSensor.blue() * 8, robot.hsvValues);
+                if(210 < robot.hsvValues[0] || 240 > robot.hsvValues[0]){
+                    //move according to blue having been found
+                    programState = currentState.MOVE;
+                }
+                else if(robot.hsvValues[0] > 345 || robot.hsvValues[0] < 15) {
+                    //move according to red having been found
+                    programState = currentState.MOVE;
+                }
+                telemetry.addData("HSV is", robot.hsvValues);
                 break;
 
             case MOVE:
-                //Manuever infront of the box
+                if (robot.leftBackDrive.getCurrentPosition() < Math.abs(robot.ticsPerInch(12))){
+
+                }
+                else{
+                    programState = currentState.TURN_AND_ADJUST;
+                }
                 break;
 
-            case TURN_AND_ADJUST:
-                if(roboLocation.equals("L")){
+            /*case TURN_AND_ADJUST:
+                if(){
                     //Line up for left
                 }
-                if(roboLocation.equals("C")){
+                if(){
                     //Line up for center
                 }
-                if(roboLocation.equals("R")){
+                if(){
                     //Line up for right
                 }
                 else{
-                    //Line up for something useful
+                    //something
                 }
                 break;
 
             case SCORE:
-                //Score glyph
+                //Score glyph*/
         }
 
 

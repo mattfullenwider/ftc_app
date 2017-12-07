@@ -47,11 +47,10 @@ import static com.sun.tools.javac.util.Constants.format;
 //@Disabled
 public class BotmanAutoBlueFarSide extends OpMode {
 
-    RelicVuMarkIdentification2 relicVuMarc = new RelicVuMarkIdentification2();
+    RelicVuMarkIdentification2 relicVuMark = new RelicVuMarkIdentification2();
+    public RelicRecoveryVuMark keyFinder;
     HardwareBotman robot = new HardwareBotman();
 
-    //Allows up to remember which key we read
-    public String roboLocation;
 
     currentState programState = currentState.KEY;
     public enum currentState {
@@ -61,11 +60,11 @@ public class BotmanAutoBlueFarSide extends OpMode {
         TURN_AND_ADJUST,
         SCORE
     }
-
+//Swag 420 blaze it
     @Override
     public void init() {
         robot.init(hardwareMap);
-        relicVuMarc.init();
+        relicVuMark.init(hardwareMap);
         telemetry.addData("Status", "Initialized");
     }
 
@@ -76,47 +75,64 @@ public class BotmanAutoBlueFarSide extends OpMode {
 
     @Override
     public void start() {
-        relicVuMarc.start();
+        relicVuMark.start();
 
     }
 
 
     @Override
     public void loop() {
-        relicVuMarc.loop();
-        relicVuMarc.vuMark = RelicRecoveryVuMark.from(relicVuMarc.relicTemplate);
+        keyFinder = relicVuMark.readKey();
+        if (relicVuMark.vuMark != RelicRecoveryVuMark.UNKNOWN) {
+
+            telemetry.addData("VuMark", "%s visible", keyFinder);
+        } else {
+            telemetry.addData("VuMark", "not visible");
+        }
+        relicVuMark.vuMark = RelicRecoveryVuMark.from(relicVuMark.relicTemplate);
         switch (programState) {
 
             case KEY:
-                relicVuMarc.pose = relicVuMarc.relicTemplateListener.getPose();
-                if (format(relicVuMarc.pose).equals("L")) {
-                    roboLocation = format(relicVuMarc.pose);
-                }
-                if (format(relicVuMarc.pose).equals("C")) {
-                    roboLocation = format(relicVuMarc.pose);
-                }
-                if (format(relicVuMarc.pose).equals("R")) {
-                    roboLocation = format(relicVuMarc.pose);
-                }
-                telemetry.addData("We are seeing %s", roboLocation);
+
+                telemetry.addData("We are seeing", keyFinder);
+                programState = currentState.JEWELS;
                 break;
 
             case JEWELS:
                 Color.RGBToHSV(robot.jewelColorSensor.red() * 8, robot.jewelColorSensor.green() * 8, robot.jewelColorSensor.blue() * 8, robot.hsvValues);
+                robot.jewelPusher.setPosition(.1);
+
+                if(210 < robot.hsvValues[0] || 240 > robot.hsvValues[0]){
+                    //move according to blue having been found
+                    programState = currentState.MOVE;
+                }
+                else if(robot.hsvValues[0] > 345 || robot.hsvValues[0] < 15) {
+                    //move according to red having been found
+                    programState = currentState.MOVE;
+                }
+                telemetry.addData("HSV is", robot.hsvValues);
                 break;
 
-            /*case MOVE:
-                //Manuever infront of the box
+            case MOVE:
+                robot.MecanumDrive((Math.PI/2), 1, 0);
+
+                if (robot.leftBackDrive.getCurrentPosition() >= Math.abs(robot.ticsPerInch(12))){
+                    robot.MecanumDrive(0, 0, 0);
+                }
+                else{
+                    robot.resetEncoders();
+                    programState = currentState.TURN_AND_ADJUST;
+                }
                 break;
 
-            case TURN_AND_ADJUST:
-                if(roboLocation.equals("L")){
+            /*case TURN_AND_ADJUST:
+                if(){
                     //Line up for left
                 }
-                if(roboLocation.equals("C")){
+                if(){
                     //Line up for center
                 }
-                if(roboLocation.equals("R")){
+                if(){
                     //Line up for right
                 }
                 else{

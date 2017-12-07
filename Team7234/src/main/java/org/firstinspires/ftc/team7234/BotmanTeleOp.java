@@ -50,6 +50,7 @@ public class BotmanTeleOp extends OpMode{
 
     private boolean isMecanum;
     private boolean bumperToggle;
+    private boolean slowDownToggle;
 
     @Override
     public void init() {
@@ -57,6 +58,7 @@ public class BotmanTeleOp extends OpMode{
         robot.init(hardwareMap);
         isMecanum = true;
         bumperToggle = true;
+        slowDownToggle = true;
     }
 
 
@@ -106,6 +108,21 @@ public class BotmanTeleOp extends OpMode{
         else if (!gamepad1.x) {
             bumperToggle = true;
         }
+
+/*
+        if (gamepad1.y){ //Allows us to toggle speed
+            if (slowDownToggle){
+                slowDownToggle = false;
+                magnitude = magnitude * 0.75;
+            }
+        }
+        if (!gamepad1.y){
+            magnitude = Math.pow(Range.clip(Math.sqrt(Math.pow(gamepad1.left_stick_x, 2) + Math.pow(gamepad1.left_stick_y, 2)), 0, 1), driveCurve);
+            slowDownToggle = true;
+        }
+
+        */
+        //TODO: Make this toggle work || current issue is in logic of having to press the y button to keep the motors going slow
         if (isMecanum){
             robot.MecanumDrive(angle, magnitude, rotation); //Drives With mecanum
         }
