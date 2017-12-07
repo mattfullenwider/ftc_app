@@ -165,10 +165,10 @@ public class BotmanTeleOp extends OpMode{
         telemetry.addData("X: ", gamepad1.left_stick_x);
         telemetry.addData("Y: ", gamepad1.left_stick_y);
         telemetry.addLine();
-        telemetry.addData("FL: ", robot.SpeedsList[0]);
-        telemetry.addData("FR: ", robot.SpeedsList[1]);
-        telemetry.addData("BR: ", robot.SpeedsList[2]);
-        telemetry.addData("BL: ", robot.SpeedsList[3]);
+        telemetry.addData("FL: ", robot.mecanumSpeeds[0]);
+        telemetry.addData("FR: ", robot.mecanumSpeeds[1]);
+        telemetry.addData("BR: ", robot.mecanumSpeeds[2]);
+        telemetry.addData("BL: ", robot.mecanumSpeeds[3]);
         
         //endregion
     }
