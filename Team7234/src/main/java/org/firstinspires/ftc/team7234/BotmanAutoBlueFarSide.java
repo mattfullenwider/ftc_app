@@ -57,7 +57,7 @@ public class BotmanAutoBlueFarSide extends OpMode {
         KEY,
         JEWELS,
         MOVE,
-        TURN_AND_ADJUST,
+        LEFT, CENTER, RIGHT,
         SCORE
     }
 //Swag 420 blaze it
@@ -103,42 +103,44 @@ public class BotmanAutoBlueFarSide extends OpMode {
                 robot.jewelPusher.setPosition(.1);
 
                 if(210 < robot.hsvValues[0] || 240 > robot.hsvValues[0]){
-                    //move according to blue having been found
+                    robot.MecanumDrive(0, 0.5, 0.5);
                     programState = currentState.MOVE;
                 }
                 else if(robot.hsvValues[0] > 345 || robot.hsvValues[0] < 15) {
-                    //move according to red having been found
+                    robot.MecanumDrive(0, 0.5, -0.5);
                     programState = currentState.MOVE;
                 }
                 telemetry.addData("HSV is", robot.hsvValues);
                 break;
 
-            case MOVE:
-                robot.MecanumDrive((Math.PI/2), 1, 0);
+            /*case MOVE:
+                robot.MecanumDrive(Math.PI/2, 1, 0);
 
                 if (robot.leftBackDrive.getCurrentPosition() >= Math.abs(robot.ticsPerInch(12))){
                     robot.MecanumDrive(0, 0, 0);
                 }
                 else{
                     robot.resetEncoders();
-                    programState = currentState.TURN_AND_ADJUST;
+                    if (keyFinder.equals("L")){
+                        programState = currentState.LEFT;
+                    }
+                    else if (keyFinder.equals("C")){
+                        programState = currentState.CENTER;
+                    }
+                    else if (keyFinder.equals("R")){
+                        programState = currentState.RIGHT;
+                    }
                 }
                 break;
 
-            /*case TURN_AND_ADJUST:
-                if(){
-                    //Line up for left
-                }
-                if(){
-                    //Line up for center
-                }
-                if(){
-                    //Line up for right
-                }
-                else{
-                    //something
-                }
-                break;
+            /*case LEFT:
+
+
+            case CENTER:
+
+
+            case RIGHT:
+
 
             case SCORE:
                 //Score glyph*/

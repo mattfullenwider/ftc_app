@@ -217,6 +217,7 @@ public class HardwareBotman
     public double ticsPerInch(double distance){
         return (280/Math.PI) * distance;
     }
+
     public void resetEncoders() {
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
