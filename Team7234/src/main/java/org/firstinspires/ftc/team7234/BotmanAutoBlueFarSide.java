@@ -102,19 +102,31 @@ public class BotmanAutoBlueFarSide extends OpMode {
                 Color.RGBToHSV(robot.jewelColorSensor.red() * 8, robot.jewelColorSensor.green() * 8, robot.jewelColorSensor.blue() * 8, robot.hsvValues);
                 robot.jewelPusher.setPosition(.1);
 
-                if(210 < robot.hsvValues[0] || 240 > robot.hsvValues[0]){
-                    robot.MecanumDrive(0, 0.5, 0.5);
-                    programState = currentState.MOVE;
+                if(robot.hsvValues[0] > 210 || robot.hsvValues[0] < 240){
+                    if(robot.leftBackDrive.getCurrentPosition() <= robot.ticsPerInch(1)){
+                        robot.arrayDrive(0.5, 0, 0.5, 0);
+                    }
+                    else if (robot.leftBackDrive.getCurrentPosition() >= robot.ticsPerInch(-0.9)){
+                        robot.jewelPusher.setPosition(.9);
+                        robot.arrayDrive(-0.5, 0, -0.5, 0);
+                        programState = currentState.MOVE;
+                    }
                 }
                 else if(robot.hsvValues[0] > 345 || robot.hsvValues[0] < 15) {
-                    robot.MecanumDrive(0, 0.5, -0.5);
-                    programState = currentState.MOVE;
+                    if(robot.rightBackDrive.getCurrentPosition() <= robot.ticsPerInch(1)){
+                        robot.arrayDrive(0, 0.5, 0, 0.5);
+                    }
+                    else if (robot.rightBackDrive.getCurrentPosition() >= robot.ticsPerInch(-0.9)){
+                        robot.jewelPusher.setPosition(.9);
+                        robot.arrayDrive(0, -0.5, 0, -0.5);
+                        programState = currentState.MOVE;
+                    }
                 }
                 telemetry.addData("HSV is", robot.hsvValues);
                 break;
 
             /*case MOVE:
-                robot.MecanumDrive(Math.PI/2, 1, 0);
+                robot.arrayDrive(1, 1, 1, 1);
 
                 if (robot.leftBackDrive.getCurrentPosition() >= Math.abs(robot.ticsPerInch(12))){
                     robot.MecanumDrive(0, 0, 0);
