@@ -97,11 +97,11 @@ public class BotmanAutoRedClose extends OpMode {
                 Color.RGBToHSV(robot.jewelColorSensor.red() * 8, robot.jewelColorSensor.green() * 8, robot.jewelColorSensor.blue() * 8, robot.hsvValues);
                 telemetry.addData("HSV is", robot.hsvValues );
 
-                if (robot.hsvValues = );
+                if (robot.hsvValues [0] > 345 || robot.hsvValues[0] < 15);
 
-                else
 
-                    break;
+                else if (210 < robot.hsvValues[0] || 240 > robot.hsvValues[0])
+
                 break;
 
             case MOVE:
