@@ -29,17 +29,13 @@
 
 package org.firstinspires.ftc.team7234;
 
-import android.hardware.Sensor;
-
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.configuration.ExpansionHubMotorControllerPositionParams;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorMRColor;
+import com.qualcomm.robotcore.util.Range;
 
 /**
  * This is NOT an opmode.
@@ -80,23 +76,18 @@ public class HardwareBotman
     public static final double JEWEL_PUSHER_DOWN = 1.0;
 
     //Establishes variables for motors
-    double[] RawMotorSpeeds = {0.0, 0.0, 0.0, 0.0};
-    double[] FinalMotorSpeeds = {0.0, 0.0, 0.0, 0.0};
-    double SpeedDivider = 0;
-    double[] SpeedsList = {0.0, 0.0, 0.0, 0.0};
+    double[] mecanumSpeeds = {0.0, 0.0, 0.0, 0.0};
     DcMotor[] driveMotors;
 
     /* local OpMode members. */
-    HardwareMap hwMap           =  null;
+    private HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public HardwareBotman(){
-
-    }
-
+    HardwareBotman(){}
+    //region Hardware Map
     /* Initialize standard Hardware interfaces */
-    public void init(HardwareMap ahwMap) {
+    void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;
 
@@ -138,30 +129,27 @@ public class HardwareBotman
 
         driveMotors  = new DcMotor[] {leftFrontDrive, rightFrontDrive, leftBackDrive, rightBackDrive};
     }
+    //endregion
+    //region Gripper Control
 
-    public void gripperOpen() {
+    void gripperOpen() {
         leftClaw.setPosition(LEFT_GRIPPER_OPEN);
         rightClaw.setPosition(RIGHT_GRIPPER_OPEN);
     }
-    public void gripperClose() {
+    void gripperClose() {
         leftClaw.setPosition(LEFT_GRIPPER_CLOSED);
         rightClaw.setPosition(RIGHT_GRIPPER_CLOSED);
     }
-
-    //Code to run the wheels directly from four powers
+    //endregion
+    //region Robot Driving
     void arrayDrive(double lf, double rf, double lb, double rb){
         leftFrontDrive.setPower(lf);
         rightFrontDrive.setPower(rf);
         leftBackDrive.setPower(lb);
         rightBackDrive.setPower(rb);
     }
-
-    //Code to run the wheels omnidirectionally
     void MecanumDrive(double angle, double magnitude, double rotation){  //Calculates and sends values to wheels
-
-        //Exceptions to find errors
-
-
+        //region Exceptions
         if(angle> 1.5 *Math.PI || angle< -0.5*Math.PI){
             throw new IllegalArgumentException("Angle is outside range [-pi/2, 3pi/2]. Invalid Value is: " + Double.toString(angle));
         }
@@ -172,37 +160,36 @@ public class HardwareBotman
         if(rotation<-1 || rotation>1){
             throw new IllegalArgumentException("Rotation is outside range [-1, 1]. Invalid Value is: " + Double.toString(rotation));
         }
-
-
-        RawMotorSpeeds[0] = ((magnitude*(Math.sin(angle+(Math.PI/4))))+rotation);
-        RawMotorSpeeds[1] = -((magnitude*(Math.cos(angle+(Math.PI/4))))-rotation);  //Generates Raw Values for Motors
-        RawMotorSpeeds[2] = ((magnitude*(Math.cos(angle+(Math.PI/4))))+rotation);
-        RawMotorSpeeds[3] = -((magnitude*(Math.sin(angle+(Math.PI/4))))-rotation);
-
-        SpeedDivider = Math.abs(RawMotorSpeeds[0]);
+        //endregion
+        //region Initial Speeds
+        mecanumSpeeds[0] = ((magnitude*(Math.sin(angle+(Math.PI/4))))+rotation);
+        mecanumSpeeds[1] = -((magnitude*(Math.cos(angle+(Math.PI/4))))-rotation);  //Generates Raw Values for Motors
+        mecanumSpeeds[2] = ((magnitude*(Math.cos(angle+(Math.PI/4))))+rotation);
+        mecanumSpeeds[3] = -((magnitude*(Math.sin(angle+(Math.PI/4))))-rotation);
+        //endregion
+        //region Speed Divider
+        double speedDivider = Math.abs(mecanumSpeeds[0]);
+        //Speed divider is set as
         for (int i=0; i<4; i++){
-            if (Math.abs(RawMotorSpeeds[i]) > SpeedDivider){
-                SpeedDivider = Math.abs(RawMotorSpeeds[i]);
+            if (Math.abs(mecanumSpeeds[i]) > speedDivider){
+                speedDivider = Math.abs(mecanumSpeeds[i]);
             }
         }
 
-        if (SpeedDivider > 1) {            //SpeedDivider is only called if it is necessary to maintain ranges
+        if (speedDivider > 1) {            //SpeedDivider is only called if it is necessary to maintain ranges
             for (int i=0; i<4; i++) {
-                FinalMotorSpeeds[i] = RawMotorSpeeds[i] / SpeedDivider;
+                mecanumSpeeds[i] /= speedDivider;
             }
         }
-        else {
-            System.arraycopy(RawMotorSpeeds, 0, FinalMotorSpeeds, 0, 4);
-        }
-
+        //endregion
+        //region Power Assignment
         for (int i =0; i<4; i++){
-            SpeedsList[i] = this.clip(FinalMotorSpeeds[i], -1.0, 1.0);  //Makes sure values are in range [-1, 1], just in case
-
-            driveMotors[i].setPower(SpeedsList[i]);
+            mecanumSpeeds[i] = Range.clip(mecanumSpeeds[i], -1.0, 1.0);
+            driveMotors[i].setPower(mecanumSpeeds[i]);
         }
-
+        //endregion
     }
-
+    //endregion
     //Function to limit values to a range
     private double clip(double input, double min, double max){   //Method for clipping a value within a range
         double output = input;
@@ -226,5 +213,6 @@ public class HardwareBotman
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
+
  }
 
