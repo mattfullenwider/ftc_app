@@ -34,43 +34,39 @@ package org.firstinspires.ftc.team7234;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.team7234.RelicVuMarkIdentification2;
-import org.firstinspires.ftc.team7234.HardwareBotman;
 
 import static com.sun.tools.javac.util.Constants.format;
 
 /**
  * Demonstrates empty OpMode
  */
-@Autonomous(name = "Botman Auto Test", group = "Example")
+@Autonomous(name = "Botman Auto Blue Far", group = "Example")
 //@Disabled
-public class BotmanAutoSkeleton extends OpMode {
+public class BotmanAutoBlueFarSide extends OpMode {
 
     RelicVuMarkIdentification2 relicVuMark = new RelicVuMarkIdentification2();
+    public RelicRecoveryVuMark keyFinder;
     HardwareBotman robot = new HardwareBotman();
-    RelicRecoveryVuMark keyFinder;
+
 
     currentState programState = currentState.KEY;
     public enum currentState {
         KEY,
         JEWELS,
         MOVE,
-        TURN_AND_ADJUST,
+        LEFT, CENTER, RIGHT,
         SCORE
     }
-
+//Swag 420 blaze it
     @Override
     public void init() {
         robot.init(hardwareMap);
         relicVuMark.init(hardwareMap);
         telemetry.addData("Status", "Initialized");
     }
-
 
 
     @Override
@@ -104,40 +100,59 @@ public class BotmanAutoSkeleton extends OpMode {
 
             case JEWELS:
                 Color.RGBToHSV(robot.jewelColorSensor.red() * 8, robot.jewelColorSensor.green() * 8, robot.jewelColorSensor.blue() * 8, robot.hsvValues);
-                if(210 < robot.hsvValues[0] || 240 > robot.hsvValues[0]){
-                    //move according to blue having been found
-                    programState = currentState.MOVE;
+                robot.jewelPusher.setPosition(.1);
+
+                if(robot.hsvValues[0] > 210 || robot.hsvValues[0] < 240){
+                    if(robot.leftBackDrive.getCurrentPosition() <= robot.ticsPerInch(1)){
+                        robot.arrayDrive(0.5, 0, 0.5, 0);
+                    }
+                    else if (robot.leftBackDrive.getCurrentPosition() >= robot.ticsPerInch(-0.9)){
+                        robot.jewelPusher.setPosition(.9);
+                        robot.arrayDrive(-0.5, 0, -0.5, 0);
+                        programState = currentState.MOVE;
+                    }
                 }
                 else if(robot.hsvValues[0] > 345 || robot.hsvValues[0] < 15) {
-                    //move according to red having been found
-                    programState = currentState.MOVE;
+                    if(robot.rightBackDrive.getCurrentPosition() <= robot.ticsPerInch(1)){
+                        robot.arrayDrive(0, 0.5, 0, 0.5);
+                    }
+                    else if (robot.rightBackDrive.getCurrentPosition() >= robot.ticsPerInch(-0.9)){
+                        robot.jewelPusher.setPosition(.9);
+                        robot.arrayDrive(0, -0.5, 0, -0.5);
+                        programState = currentState.MOVE;
+                    }
                 }
                 telemetry.addData("HSV is", robot.hsvValues);
                 break;
 
-            case MOVE:
-                if (robot.leftBackDrive.getCurrentPosition() < Math.abs(robot.ticsPerInch(12))){
+            /*case MOVE:
+                robot.arrayDrive(1, 1, 1, 1);
 
+                if (robot.leftBackDrive.getCurrentPosition() >= Math.abs(robot.ticsPerInch(12))){
+                    robot.MecanumDrive(0, 0, 0);
                 }
                 else{
-                    programState = currentState.TURN_AND_ADJUST;
+                    robot.resetEncoders();
+                    if (keyFinder.equals("L")){
+                        programState = currentState.LEFT;
+                    }
+                    else if (keyFinder.equals("C")){
+                        programState = currentState.CENTER;
+                    }
+                    else if (keyFinder.equals("R")){
+                        programState = currentState.RIGHT;
+                    }
                 }
                 break;
 
-            /*case TURN_AND_ADJUST:
-                if(){
-                    //Line up for left
-                }
-                if(){
-                    //Line up for center
-                }
-                if(){
-                    //Line up for right
-                }
-                else{
-                    //something
-                }
-                break;
+            /*case LEFT:
+
+
+            case CENTER:
+
+
+            case RIGHT:
+
 
             case SCORE:
                 //Score glyph*/

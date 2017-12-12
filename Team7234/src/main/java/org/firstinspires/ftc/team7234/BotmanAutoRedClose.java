@@ -34,26 +34,24 @@ package org.firstinspires.ftc.team7234;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.team7234.RelicVuMarkIdentification2;
-import org.firstinspires.ftc.team7234.HardwareBotman;
 
 import static com.sun.tools.javac.util.Constants.format;
 
 /**
  * Demonstrates empty OpMode
  */
-@Autonomous(name = "Botman Auto Test", group = "Example")
+@Autonomous(name = "Botman Auto Red Close", group = "Example")
 //@Disabled
-public class BotmanAutoSkeleton extends OpMode {
+public class BotmanAutoRedClose extends OpMode {
 
     RelicVuMarkIdentification2 relicVuMark = new RelicVuMarkIdentification2();
+    public RelicRecoveryVuMark keyfinder;
     HardwareBotman robot = new HardwareBotman();
-    RelicRecoveryVuMark keyFinder;
+
+    //Allows up to remember which key we read
 
     currentState programState = currentState.KEY;
     public enum currentState {
@@ -72,7 +70,6 @@ public class BotmanAutoSkeleton extends OpMode {
     }
 
 
-
     @Override
     public void init_loop() { }
 
@@ -86,61 +83,46 @@ public class BotmanAutoSkeleton extends OpMode {
 
     @Override
     public void loop() {
-        keyFinder = relicVuMark.readKey();
-        if (relicVuMark.vuMark != RelicRecoveryVuMark.UNKNOWN) {
-
-            telemetry.addData("VuMark", "%s visible", keyFinder);
-        } else {
-            telemetry.addData("VuMark", "not visible");
-        }
+        keyfinder = relicVuMark.readKey();
         relicVuMark.vuMark = RelicRecoveryVuMark.from(relicVuMark.relicTemplate);
         switch (programState) {
 
             case KEY:
 
-                telemetry.addData("We are seeing", keyFinder);
-                programState = currentState.JEWELS;
+                telemetry.addData("We are seeing ", keyfinder);
                 break;
 
             case JEWELS:
+                robot.jewelPusher.setPosition(.6);
                 Color.RGBToHSV(robot.jewelColorSensor.red() * 8, robot.jewelColorSensor.green() * 8, robot.jewelColorSensor.blue() * 8, robot.hsvValues);
-                if(210 < robot.hsvValues[0] || 240 > robot.hsvValues[0]){
-                    //move according to blue having been found
-                    programState = currentState.MOVE;
-                }
-                else if(robot.hsvValues[0] > 345 || robot.hsvValues[0] < 15) {
-                    //move according to red having been found
-                    programState = currentState.MOVE;
-                }
-                telemetry.addData("HSV is", robot.hsvValues);
+                telemetry.addData("HSV is", robot.hsvValues );
+
+                if (robot.hsvValues = );
+
+                else
+
+                    break;
                 break;
 
             case MOVE:
-                if (robot.leftBackDrive.getCurrentPosition() < Math.abs(robot.ticsPerInch(12))){
-
-                }
-                else{
-                    programState = currentState.TURN_AND_ADJUST;
-                }
+                //Manuever infront of the box
+                while (robot.leftBackDrive.getCurrentPosition() < Math.abs(5000))
                 break;
 
-            /*case TURN_AND_ADJUST:
-                if(){
+            case TURN_AND_ADJUST:
+               // if
                     //Line up for left
-                }
-                if(){
+               // }
+                //if
                     //Line up for center
-                }
-                if(){
+               // }
+               // if
                     //Line up for right
-                }
-                else{
-                    //something
-                }
+               // }
                 break;
 
             case SCORE:
-                //Score glyph*/
+                //Score glyph
         }
 
 

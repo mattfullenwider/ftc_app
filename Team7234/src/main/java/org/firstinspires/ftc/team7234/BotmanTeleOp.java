@@ -44,23 +44,27 @@ public class BotmanTeleOp extends OpMode{
     private static final double driveCurve = 1.0;
     private double driveMultiplier = 1.0;
     private boolean isMecanum;
+
     private boolean buttonToggle;
     private boolean gripperClosed;
     private boolean gripperToggle;
     private boolean speedControl;
     private boolean speedToggle;
     //endregion
+
     @Override
     public void init() {
         robot.init(hardwareMap);
         //region Boolean Initialization
         isMecanum = true;
+
         buttonToggle = true;
         gripperClosed = true;
         gripperToggle = true;
         speedToggle = true;
         speedControl = false;
         //endregion
+
     }
     @Override
     public void init_loop(){}
@@ -98,6 +102,7 @@ public class BotmanTeleOp extends OpMode{
             buttonToggle = true;
         }
 
+
         if (speedToggle){
             if(gamepad1.b){
                 speedControl = !speedControl;
@@ -113,6 +118,7 @@ public class BotmanTeleOp extends OpMode{
         //Sends Power to the Robot Arm
         robot.arm.setPower(armStick);
         //Drives the robot
+
         if (isMecanum){
             robot.MecanumDrive(angle, magnitude, rotation); //Drives Omnidirectionally
         }
